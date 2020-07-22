@@ -7,6 +7,7 @@
 // @match        https://logs.tf/*
 // @connect      api.demos.tf
 // @grant        GM.xmlHttpRequest
+// @require      https://unpkg.com/timeago.js@4.0.2/dist/timeago.min.js
 // ==/UserScript==
 
 async function init () {
@@ -99,7 +100,7 @@ async function parseLogsTF () {
 			<li>
 				<a href="https://demos.tf/${i.id}">
 					${i.server}, ${i.map}, ${i.playerCount} players,
-					${timeSince(i.time * 1000)} ago,
+					${timeago.format(i.time * 1000)},
 					${new Date(i.time * 1000).toLocaleString()}
 				</a>
 			</li>`
@@ -116,49 +117,4 @@ function div(content) {
 	const el = document.createElement('div')
 	el.innerHTML = content
 	return el
-}
-
-function timeSince(date) {
-	// https://stackoverflow.com/a/23259289
-
-	if (typeof date !== 'object') {
-		date = new Date(date);
-	}
-
-	var seconds = Math.floor((new Date() - date) / 1000);
-	var intervalType;
-
-	var interval = Math.floor(seconds / 31536000);
-	if (interval >= 1) {
-		intervalType = 'year';
-	} else {
-		interval = Math.floor(seconds / 2592000);
-		if (interval >= 1) {
-			intervalType = 'month';
-		} else {
-			interval = Math.floor(seconds / 86400);
-			if (interval >= 1) {
-				intervalType = 'day';
-			} else {
-				interval = Math.floor(seconds / 3600);
-				if (interval >= 1) {
-					intervalType = "hour";
-				} else {
-					interval = Math.floor(seconds / 60);
-					if (interval >= 1) {
-						intervalType = "minute";
-					} else {
-						interval = seconds;
-						intervalType = "second";
-					}
-				}
-			}
-		}
-	}
-
-	if (interval > 1 || interval === 0) {
-		intervalType += 's';
-	}
-
-	return interval + ' ' + intervalType;
 }

@@ -7,12 +7,10 @@
 // @connect      api.etf2l.org
 // @connect      api.demos.tf
 // @connect      logs.tf
+// @require      https://unpkg.com/timeago.js@4.0.2/dist/timeago.min.js
 // ==/UserScript==
 
-let dateFns
-
-(async function(){
-	dateFns = await import('https://cdn.pika.dev/date-fns@^2.14.0')
+(function(){
 	main()
 })()
 
@@ -141,7 +139,7 @@ function LogsTF (playersEl, dataset, enableButtonCb) {
 			<ul>
 			${api.logs.map(i => {
 				let { id, title, map, date, views, players } = i
-				const playedAgo = dateFns.formatDistanceStrict(date * 1000, new Date(), {addSuffix: true})
+				const playedAgo = timeago.format(date * 1000)
 				const localeTime = new Date(date * 1000).toLocaleString()
 				const url = 'https://logs.tf/' + id
 
@@ -176,7 +174,7 @@ function DemosTF (playersEl, dataset, enableButtonCb) {
 			${api.map(i => {
 				let { id, server, duration, map, time, red, blue, redScore, blueScore, playerCount } = i
 				const title = `${server}: ${blue} vs ${red}` // logs.tf title style
-				const playedAgo = dateFns.formatDistanceStrict(time * 1000, new Date(), {addSuffix: true})
+				const playedAgo = timeago.format(time * 1000)
 				const localeTime = new Date(time * 1000).toLocaleString()
 				const url = 'https://demos.tf/' + id
 
