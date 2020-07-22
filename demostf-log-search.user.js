@@ -25,7 +25,6 @@ function readyChek () {
 	return new Promise((resolve) => {
 
 		const id = setInterval(() => {
-
 			const isDemosTFReady = document.querySelectorAll('.players a').length >= 2
 
 			if (isDemosTFReady) {
@@ -37,8 +36,7 @@ function readyChek () {
 	})
 }
 
-
-(function(){
+(function () {
 	init()
 })()
 

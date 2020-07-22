@@ -10,7 +10,7 @@
 // @require      https://unpkg.com/timeago.js@4.0.2/dist/timeago.min.js
 // ==/UserScript==
 
-(function(){
+(function () {
 	main()
 })()
 
@@ -119,7 +119,6 @@ async function main () {
 	containerEl.append(mapListingEl)
 }
 
-
 function LogsTF (playersEl, dataset, enableButtonCb) {
 	const ids = getSteam64fromEl(playersEl)
 	const { mapname, service, css_id } = dataset
@@ -192,7 +191,6 @@ function DemosTF (playersEl, dataset, enableButtonCb) {
 }
 
 function PlayerSelectRow (players, index_by_etf2lId) {
-
 	const content = `
 	<fieldset>
 		${players.map(i => `

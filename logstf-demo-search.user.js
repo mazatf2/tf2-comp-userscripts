@@ -20,7 +20,7 @@ async function init () {
 	if (host === 'logs.tf') parseLogsTF()
 }
 
-(function(){
+(function () {
 	init()
 })()
 
