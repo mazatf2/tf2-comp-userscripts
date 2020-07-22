@@ -1,12 +1,9 @@
 // ==UserScript==
-// @name         logs.tf & demos.tf linker thingy
+// @name         Demos.tf & Logs.tf match entries linker.
 // @version      0.1
-// @description  adds links logs.tf logs to demo.tf demos
+// @description  Adds links to Logs.tf entries from Demos.tf. Links are added to Demos.tf match pages.
 // @author       https://github.com/mazatf2/
-// @match        http://logs.tf/*
-// @match        https://logs.tf/*
 // @match        https://demos.tf/*
-// @connect      api.demos.tf
 // @connect      logs.tf
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
@@ -26,15 +23,12 @@ async function init () {
 	}
 
 	// https://demos.tf/384366
-	// https://logs.tf/2520991
 	const isPathnameID = /\/\d+/.test(pathname)
 	if(!isPathnameID) return
 
 	await readyChek()
 
-	if (host === 'logs.tf') parseLogsTF()
 	if (host === 'demos.tf') parseDemosTF()
-
 }
 
 function readyChek () {
@@ -43,9 +37,8 @@ function readyChek () {
 		const id = setInterval(() => {
 
 			const isDemosTFReady = document.querySelectorAll('.players a').length >= 2
-			const isLogsTFReady = document.querySelectorAll('#players tbody tr').length >= 2
 
-			if (isDemosTFReady || isLogsTFReady) {
+			if (isDemosTFReady) {
 				clearInterval(id)
 				resolve(true)
 			}
@@ -86,66 +79,6 @@ function fetchApi (url) {
 			reject(e)
 		}
 	})
-}
-
-async function parseLogsTF () {
-	let error = null
-
-	const container = document.querySelector('#log-section-footer')
-	let el = div`userscript is searching for demos`
-	container.append(el)
-
-	// profiles_steamid64
-	const re = /player_(\d{17})/
-
-	const players = [...document.querySelectorAll('#players tbody tr')]
-		.filter(element => re.test(element.id))
-		.map(element => re.exec(element.id)?.[1])
-
-	const mapName = document.querySelector('#log-map')?.textContent
-
-	if(!players) el.innerHTML = 'userscript error: no players'
-	if(!mapName) el.innerHTML = 'userscript error: no map name'
-
-	if(/error/.test(el.innerHTML)) return
-
-	const url = `https://api.demos.tf/demos/?players=${players.join(',')}&map=${mapName}`
-	console.log(url)
-
-	const response = await fetchApi(url).catch(err => {
-		console.error(err)
-		error = err
-	})
-
-	console.log('response', response)
-
-	let demos = []
-	if(response?.length > 0) {
-		demos = response
-	} else {
-		// possible error or no demos
-		// error = 'demos.tf api error'
-	}
-
-	const content = `
-		<br>
-		<span>demos:</span><br>
-		<ol>
-		${demos.map(i => `
-			<li>
-				<a href="https://demos.tf/${i.id}">
-					${i.server}, ${i.map}, ${i.playerCount} players,
-					${timeSince(i.time * 1000)} ago,
-					${new Date(i.time * 1000).toLocaleString()}
-				</a>
-			</li>`
-			).join('')
-		}
-		</ol>
-		${error ? 'userscript error: ' + error : ''}
-	`
-
-	el.innerHTML = content
 }
 
 async function parseDemosTF () {

@@ -1,59 +1,23 @@
 // ==UserScript==
-// @name         logs.tf & demos.tf linker thingy
+// @name         Logs.tf & Demos.tf match entries linker.
 // @version      0.1
-// @description  adds links logs.tf logs to demo.tf demos
+// @description  Adds links to Demos.tf entries from Logs.tf. Links are added to Logs.tf match pages.
 // @author       https://github.com/mazatf2/
 // @match        http://logs.tf/*
 // @match        https://logs.tf/*
-// @match        https://demos.tf/*
 // @connect      api.demos.tf
-// @connect      logs.tf
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
-
-let isPatched = false
 
 async function init () {
 	const {host, pathname} = window.location
 
-	// detect demos.tf navigation events
-	if(host === 'demos.tf' && !isPatched){
-		isPatched = true
-		applyPatch()
-		window.addEventListener('locationchange', ()=>{
-			init()
-		})
-	}
-
-	// https://demos.tf/384366
 	// https://logs.tf/2520991
 	const isPathnameID = /\/\d+/.test(pathname)
 	if(!isPathnameID) return
 
-	await readyChek()
-
 	if (host === 'logs.tf') parseLogsTF()
-	if (host === 'demos.tf') parseDemosTF()
-
 }
-
-function readyChek () {
-	return new Promise((resolve) => {
-
-		const id = setInterval(() => {
-
-			const isDemosTFReady = document.querySelectorAll('.players a').length >= 2
-			const isLogsTFReady = document.querySelectorAll('#players tbody tr').length >= 2
-
-			if (isDemosTFReady || isLogsTFReady) {
-				clearInterval(id)
-				resolve(true)
-			}
-
-		}, 500)
-	})
-}
-
 
 (function(){
 	init()
@@ -148,68 +112,6 @@ async function parseLogsTF () {
 	el.innerHTML = content
 }
 
-async function parseDemosTF () {
-	let error = null
-
-	const container = document.querySelector('footer')
-	let el = div`userscript is searching for logs`
-	container.before(el)
-
-	// profiles/steamid64
-	const re = /profiles\/(\d{17})/
-
-	const players = [...document.querySelectorAll('.players a')]
-		.filter(i => re.test(i.href))
-		.map(element => re.exec(element.href)?.[1])
-
-	const mapName = [...document.querySelectorAll('.demo-info span')]
-		.filter(element => element.className !== 'time')
-		?.[0]?.textContent
-
-	if(!players) el.innerHTML = 'userscript error: no players'
-	if(!mapName) el.innerHTML = 'userscript error: no map name'
-
-	if(/error/.test(el.innerHTML)) return
-
-	const url = `https://logs.tf/api/v1/log?player=${players.join(',')}&map=${mapName}`
-	console.log(url)
-
-	const response = await fetchApi(url).catch(err => {
-		console.error('a', err)
-		error = err
-	})
-
-	console.log('response', response)
-
-	let logs = []
-	if(response?.logs){
-		logs = response.logs
-	} else {
-		error = 'logs.tf api error'
-	}
-
-	const content = `
-		<span>logs:</span><br>
-		<ol>
-		${logs.map(i => `
-			<li>
-				<a href="https://logs.tf/${i.id}">
-					${i.title}, ${i.map}, ${i.players} players,
-					${timeSince(i.date * 1000)} ago,
-					${new Date(i.date * 1000).toLocaleString()}
-				</a>
-			</li>`
-			).join('')
-		}
-		</ol>
-		${response?.error ? 'userscript error: ' + response.error : ''}
-		<br>
-		${error ? 'userscript error: ' + error : ''}
-	`
-
-	el.innerHTML = content
-}
-
 function div(content) {
 	const el = document.createElement('div')
 	el.innerHTML = content
@@ -259,26 +161,4 @@ function timeSince(date) {
 	}
 
 	return interval + ' ' + intervalType;
-}
-
-function applyPatch(){
-	//https://stackoverflow.com/a/52809105
-
-	history.pushState = ( f => function pushState(){
-		var ret = f.apply(this, arguments)
-		window.dispatchEvent(new Event('pushstate'))
-		window.dispatchEvent(new Event('locationchange'))
-		return ret
-	})(history.pushState)
-
-	history.replaceState = ( f => function replaceState(){
-		var ret = f.apply(this, arguments);
-		window.dispatchEvent(new Event('replacestate'))
-		window.dispatchEvent(new Event('locationchange'))
-		return ret
-	})(history.replaceState)
-
-	window.addEventListener('popstate',()=>{
-		window.dispatchEvent(new Event('locationchange'))
-	})
 }
