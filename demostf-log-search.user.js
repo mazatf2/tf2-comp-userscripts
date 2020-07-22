@@ -8,19 +8,8 @@
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
-let isPatched = false
-
 async function init () {
 	const {host, pathname} = window.location
-
-	// detect demos.tf navigation events
-	if(host === 'demos.tf' && !isPatched){
-		isPatched = true
-		applyPatch()
-		window.addEventListener('locationchange', ()=>{
-			init()
-		})
-	}
 
 	// https://demos.tf/384366
 	const isPathnameID = /\/\d+/.test(pathname)
@@ -192,26 +181,4 @@ function timeSince(date) {
 	}
 
 	return interval + ' ' + intervalType;
-}
-
-function applyPatch(){
-	//https://stackoverflow.com/a/52809105
-
-	history.pushState = ( f => function pushState(){
-		var ret = f.apply(this, arguments)
-		window.dispatchEvent(new Event('pushstate'))
-		window.dispatchEvent(new Event('locationchange'))
-		return ret
-	})(history.pushState)
-
-	history.replaceState = ( f => function replaceState(){
-		var ret = f.apply(this, arguments);
-		window.dispatchEvent(new Event('replacestate'))
-		window.dispatchEvent(new Event('locationchange'))
-		return ret
-	})(history.replaceState)
-
-	window.addEventListener('popstate',()=>{
-		window.dispatchEvent(new Event('locationchange'))
-	})
 }
