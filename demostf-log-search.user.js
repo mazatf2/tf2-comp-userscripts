@@ -15,10 +15,19 @@ async function init () {
 	// https://demos.tf/384366
 	const isPathnameID = /\/\d+/.test(pathname)
 	if(!isPathnameID) return
+	if(host !== 'demos.tf') return
 
 	await readyChek()
 
-	if (host === 'demos.tf') parseDemosTF()
+	const container = document.querySelector('footer')
+	const buttonEl = button`userscript: Search Logs.tf`
+
+	buttonEl.addEventListener('click', ()=>{
+		buttonEl.disabled = true
+		parseDemosTF(container)
+	})
+
+	container.before(buttonEl)
 }
 
 function readyChek () {
@@ -69,10 +78,9 @@ function fetchApi (url) {
 	})
 }
 
-async function parseDemosTF () {
+async function parseDemosTF (container) {
 	let error = null
 
-	const container = document.querySelector('footer')
 	let el = div`userscript is searching for logs`
 	container.before(el)
 
@@ -133,6 +141,12 @@ async function parseDemosTF () {
 
 function div(content) {
 	const el = document.createElement('div')
+	el.innerHTML = content
+	return el
+}
+
+function button(content) {
+	const el = document.createElement('button')
 	el.innerHTML = content
 	return el
 }

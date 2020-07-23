@@ -16,8 +16,17 @@ async function init () {
 	// https://logs.tf/2520991
 	const isPathnameID = /\/\d+/.test(pathname)
 	if(!isPathnameID) return
+	if (host !== 'logs.tf')  return
 
-	if (host === 'logs.tf') parseLogsTF()
+	const container = document.querySelector('#log-section-footer')
+	const buttonEl = button`userscript: Search Demos.tf`
+
+	buttonEl.addEventListener('click', ()=>{
+		buttonEl.disabled = true
+		parseLogsTF(container)
+	})
+
+	container.append(buttonEl)
 }
 
 (function () {
@@ -53,10 +62,9 @@ function fetchApi (url) {
 	})
 }
 
-async function parseLogsTF () {
+async function parseLogsTF (container) {
 	let error = null
 
-	const container = document.querySelector('#log-section-footer')
 	let el = div`userscript is searching for demos`
 	container.append(el)
 
@@ -115,6 +123,12 @@ async function parseLogsTF () {
 
 function div(content) {
 	const el = document.createElement('div')
+	el.innerHTML = content
+	return el
+}
+
+function button(content) {
+	const el = document.createElement('button')
 	el.innerHTML = content
 	return el
 }
