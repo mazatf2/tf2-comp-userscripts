@@ -79,9 +79,7 @@ function fetchApi (url) {
 }
 
 async function parseDemosTF (container) {
-	let error = null
-
-	let el = div`userscript is searching for logs`
+	let el = div``
 	container.before(el)
 
 	// profiles/steamid64
@@ -95,17 +93,18 @@ async function parseDemosTF (container) {
 		.filter(element => element.className !== 'time')
 		?.[0]?.textContent
 
-	if(!players) el.innerHTML = 'userscript error: no players'
-	if(!mapName) el.innerHTML = 'userscript error: no map name'
+	if(players.length < 2) el.innerHTML += 'userscript error: No players found<br>'
+	if(!mapName) el.innerHTML += 'userscript error: No map name found<br>'
 
 	if(/error/.test(el.innerHTML)) return
 
+	el.innerHTML += 'userscript is searching for logs<br>'
 	const url = `https://logs.tf/api/v1/log?player=${players.join(',')}&map=${mapName}`
 	console.log(url)
 
 	const response = await fetchApi(url).catch(err => {
-		console.error('a', err)
-		error = err
+		console.error(err)
+		el.innerHTML += `userscript error: ${err}, ${JSON.stringify(err, null, '\t')}<br>`
 	})
 
 	console.log('response', response)
@@ -114,7 +113,7 @@ async function parseDemosTF (container) {
 	if(response?.logs){
 		logs = response.logs
 	} else {
-		error = 'logs.tf api error'
+		el.innerHTML += 'userscript error: Logs.tf api error<br>'
 	}
 
 	const content = `
@@ -133,10 +132,9 @@ async function parseDemosTF (container) {
 		</ol>
 		${response?.error ? 'userscript error: ' + response.error : ''}
 		<br>
-		${error ? 'userscript error: ' + error : ''}
 	`
 
-	el.innerHTML = content
+	el.innerHTML += content
 }
 
 function div(content) {

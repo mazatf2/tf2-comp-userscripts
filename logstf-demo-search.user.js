@@ -63,9 +63,7 @@ function fetchApi (url) {
 }
 
 async function parseLogsTF (container) {
-	let error = null
-
-	let el = div`userscript is searching for demos`
+	let el = div``
 	container.append(el)
 
 	// profiles_steamid64
@@ -77,17 +75,18 @@ async function parseLogsTF (container) {
 
 	const mapName = document.querySelector('#log-map')?.textContent
 
-	if(!players) el.innerHTML = 'userscript error: no players'
-	if(!mapName) el.innerHTML = 'userscript error: no map name'
+	if(players.length < 2) el.innerHTML += 'userscript error: No players<br>'
+	if(!mapName) el.innerHTML += 'userscript error: No map name<br>'
 
-	if(/error/.test(el.innerHTML)) return
+	if(/error/g.test(el.innerHTML)) return
 
+	el.innerHTML += 'userscript is searching for demos<br>'
 	const url = `https://api.demos.tf/demos/?players=${players.join(',')}&map=${mapName}`
 	console.log(url)
 
 	const response = await fetchApi(url).catch(err => {
 		console.error(err)
-		error = err
+		el.innerHTML += `userscript error: ${err}, ${JSON.stringify(err, null, '\t')}<br>`
 	})
 
 	console.log('response', response)
@@ -96,13 +95,12 @@ async function parseLogsTF (container) {
 	if(response?.length > 0) {
 		demos = response
 	} else {
-		// possible error or no demos
-		// error = 'demos.tf api error'
+		el.innerHTML += 'userscript error: Demos.tf api error<br>'
 	}
 
 	const content = `
 		<br>
-		<span>demos:</span><br>
+		<span>Demos:</span><br>
 		<ol>
 		${demos.map(i => `
 			<li>
@@ -115,10 +113,9 @@ async function parseLogsTF (container) {
 			).join('')
 		}
 		</ol>
-		${error ? 'userscript error: ' + error : ''}
 	`
 
-	el.innerHTML = content
+	el.innerHTML += content
 }
 
 function div(content) {
