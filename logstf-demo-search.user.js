@@ -19,14 +19,8 @@ async function init () {
 	if (host !== 'logs.tf')  return
 
 	const container = document.querySelector('#log-section-footer')
-	const buttonEl = button`userscript: Search Demos.tf`
 
-	buttonEl.addEventListener('click', ()=>{
-		buttonEl.disabled = true
-		parseLogsTF(container)
-	})
-
-	container.append(buttonEl)
+	parseLogsTF(container)
 }
 
 (function () {
@@ -62,60 +56,109 @@ function fetchApi (url) {
 	})
 }
 
-async function parseLogsTF (container) {
-	let el = div``
+function parseLogsTF (container) {
+	let el = div`
+	<style>
+		#userscript-demo-search * {
+			all: revert;
+		}
+	</style>`
+	
+	el.id = 'userscript-demo-search'
+
 	container.append(el)
 
 	// profiles_steamid64
 	const re = /player_(\d{17})/
-
-	const players = [...document.querySelectorAll('#players tbody tr')]
-		.filter(element => re.test(element.id))
-		.map(element => re.exec(element.id)?.[1])
-
+	
+	const playerTable = [...document.querySelectorAll('#players tbody tr')]
+	
+	const team1 = playerTable.filter(i => i.querySelector('.blu'))
+	const team2 = playerTable.filter(i => i.querySelector('.red'))
+	
+	const allPlayers = [...team1, ...team2]
+	
+	// [id64, ...]
+	const players = allPlayers.filter(element => re.test(element.id)).map(element => re.exec(element.id)?.[1])
+	
+	const playerNames = allPlayers.map(i => i.querySelector('.log-player-name')).map(element => element.innerText)
+	
 	const mapName = document.querySelector('#log-map')?.textContent
-
-	if(players.length < 2) el.innerHTML += 'userscript error: No players<br>'
-	if(!mapName) el.innerHTML += 'userscript error: No map name<br>'
-
-	if(/error/g.test(el.innerHTML)) return
-
-	el.innerHTML += 'userscript is searching for demos<br>'
-	const url = `https://api.demos.tf/demos/?players=${players.join(',')}&map=${mapName}`
-	console.log(url)
-
-	const response = await fetchApi(url).catch(err => {
-		console.error(err)
-		el.innerHTML += `userscript error: ${err}, ${JSON.stringify(err, null, '\t')}<br>`
-	})
-
-	console.log('response', response)
-
-	let demos = []
-	if(response?.length > 0) {
-		demos = response
-	} else {
-		el.innerHTML += 'userscript error: Demos.tf api error<br>'
-	}
-
-	const content = `
-		<br>
-		<span>Demos:</span><br>
-		<ol>
-		${demos.map(i => `
-			<li>
-				<a href="https://demos.tf/${i.id}">
-					${i.server}, ${i.map}, ${i.playerCount} players,
-					${timeago.format(i.time * 1000)},
-					${new Date(i.time * 1000).toLocaleString()}
-				</a>
-			</li>`
-			).join('')
-		}
-		</ol>
+	
+	if (players.length < 2) el.innerHTML += 'userscript error: No players<br>'
+	if (!mapName) el.innerHTML += 'userscript error: No map name<br>'
+	
+	if (/error/g.test(el.innerHTML)) return
+	
+	const playerSelect = `
+	<form>
+	<fieldset>
+		${playerNames.map((nick, index) => `
+			<input id="${nick}" type="checkbox" checked data-nick="${nick}" data-id64="${players[index]}" >
+			<label for="${nick}">${nick}</label>
+		`).join('')}
+	</fieldset>
+	</form>
 	`
-
-	el.innerHTML += content
+	el.innerHTML += playerSelect
+	
+	const buttonEl = button`userscript: Search Demos.tf`
+	buttonEl.addEventListener('click', () => {
+		buttonEl.disabled = true
+		renderApiResponse()
+			.then(() => buttonEl.disabled = false)
+	})
+	
+	container.append(buttonEl)
+	
+	async function renderApiResponse () {
+		// [id64, ...]
+		const selectedPlayers = [...el.querySelectorAll('input:checked')]
+			.map(i => i.dataset.id64)
+		
+		if (selectedPlayers.length < 2) {
+			el.append(log`userscript error: Not enough selected players<br>`)
+			return
+		}
+		
+		el.append(log`userscript is searching for demos<br>`)
+		const url = `https://api.demos.tf/demos/?players=${selectedPlayers.join(',')}&map=${mapName}`
+		console.log(url)
+		
+		const response = await fetchApi(url).catch(err => {
+			console.error(err)
+			el.append(log`userscript error: ${err}, ${JSON.stringify(err, null, '\t')}<br>`)
+		})
+		
+		console.log('response', response)
+		
+		let demos = []
+		if (response?.length > 0) {
+			demos = response
+		} else {
+			el.append(log`userscript error: Demos.tf api error<br>`)
+		}
+		
+		const content = document.createElement('div')
+		content.innerHTML = `
+            <br>
+            <span>Demos:</span><br>
+            <ol>
+            ${demos.map(i => `
+                <li>
+                    <a href="https://demos.tf/${i.id}">
+                        ${i.server}, ${i.map}, ${i.playerCount} players,
+                        ${timeago.format(i.time * 1000)},
+                        ${new Date(i.time * 1000).toLocaleString()}
+                    </a>
+                </li>`,
+		).join('')
+		}
+            </ol>
+        `
+		
+		el.append(content)
+	}
 }
 
 function div(content) {
@@ -126,6 +169,12 @@ function div(content) {
 
 function button(content) {
 	const el = document.createElement('button')
+	el.innerHTML = content
+	return el
+}
+
+function log(content) {
+	const el = document.createElement('div')
 	el.innerHTML = content
 	return el
 }
