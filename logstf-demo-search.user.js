@@ -71,36 +71,42 @@ function parseLogsTF (container) {
 	// profiles_steamid64
 	const re = /player_(\d{17})/
 	
-	const playerTable = [...document.querySelectorAll('#players tbody tr')]
+	const $playerTable = [...document.querySelectorAll('#players tbody tr')]
 	
-	const team1 = playerTable.filter(i => i.querySelector('.blu'))
-	const team2 = playerTable.filter(i => i.querySelector('.red'))
+	const $team1 = $playerTable
+		.filter(i => i.querySelector('.blu'))
+	const $team2 = $playerTable
+		.filter(i => i.querySelector('.red'))
 	
-	const allPlayers = [...team1, ...team2]
+	const $allPlayers = [...$team1, ...$team2]
 	
 	// [id64, ...]
-	const players = allPlayers.filter(element => re.test(element.id)).map(element => re.exec(element.id)?.[1])
+	const playerIds = $allPlayers
+		.filter(element => re.test(element.id))
+		.map(element => re.exec(element.id)?.[1])
 	
-	const playerNames = allPlayers.map(i => i.querySelector('.log-player-name')).map(element => element.innerText)
+	const playerNames = $allPlayers
+		.map(i => i.querySelector('.log-player-name'))
+		.map(element => element.innerText)
 	
 	const mapName = document.querySelector('#log-map')?.textContent
 	
-	if (players.length < 2) el.innerHTML += 'userscript error: No players<br>'
+	if (playerIds.length < 2) el.innerHTML += 'userscript error: No players<br>'
 	if (!mapName) el.innerHTML += 'userscript error: No map name<br>'
 	
 	if (/error/g.test(el.innerHTML)) return
 	
-	const playerSelect = `
+	const $playerSelect = `
 	<form>
 	<fieldset>
 		${playerNames.map((nick, index) => `
-			<input id="${nick}" type="checkbox" checked data-nick="${nick}" data-id64="${players[index]}" >
+			<input id="${nick}" type="checkbox" checked data-nick="${nick}" data-id64="${playerIds[index]}" >
 			<label for="${nick}">${nick}</label>
 		`).join('')}
 	</fieldset>
 	</form>
 	`
-	el.innerHTML += playerSelect
+	el.innerHTML += $playerSelect
 	
 	const buttonEl = button`userscript: Search Demos.tf`
 	buttonEl.addEventListener('click', () => {
