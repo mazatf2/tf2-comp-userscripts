@@ -85,9 +85,12 @@ function parseLogsTF (container) {
 		.filter(element => re.test(element.id))
 		.map(element => re.exec(element.id)?.[1])
 	
-	const playerNames = $allPlayers
+	const playerNames = arr => arr
 		.map(i => i.querySelector('.log-player-name'))
 		.map(element => element.innerText)
+	
+	const bluPlayerNames = playerNames($team1)
+	const redPlayerNames = playerNames($team2)
 	
 	const mapName = document.querySelector('#log-map')?.textContent
 	
@@ -99,7 +102,14 @@ function parseLogsTF (container) {
 	const $playerSelect = `
 	<form>
 	<fieldset>
-		${playerNames.map((nick, index) => `
+		${bluPlayerNames.map((nick, index) => `
+			<input id="${nick}" type="checkbox" checked data-nick="${nick}" data-id64="${playerIds[index]}" >
+			<label for="${nick}">${nick}</label>
+		`).join('')}
+	</fieldset>
+	
+	<fieldset>
+		${redPlayerNames.map((nick, index) => `
 			<input id="${nick}" type="checkbox" checked data-nick="${nick}" data-id64="${playerIds[index]}" >
 			<label for="${nick}">${nick}</label>
 		`).join('')}
