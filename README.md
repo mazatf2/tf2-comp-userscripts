@@ -10,7 +10,7 @@ This script uses Logs.tf and Demos.tf apis.
 
 #### Screenshots ####
 
-![Imgur Image](https://i.imgur.com/HXHKRnv.png)
+![demo-search](docs/logstf-demo-search.user.webp)
 ========
 
 ### demostf-log-search.user.js ###
