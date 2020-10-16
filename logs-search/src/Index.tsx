@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import ReactDOM from 'react-dom'
+import debounce from 'lodash.debounce'
 
 import {fetchLogs} from './fetch'
 import {searchLogsApi, logList} from './logstf_api'
@@ -57,6 +58,8 @@ const App = () => {
 		
 	}, [steam64])
 	
+	const searchDebounce = useRef((debounce((a, b, c) => search(a, b, c), 50, {leading: true, maxWait: 50}))).current
+	
 	useEffect(() => {
 		const testData = async () => {
 			if (mainData.length < 1) return
@@ -75,7 +78,7 @@ const App = () => {
 				}
 			})
 			
-			const results = search(searchVal, searchObj, {key: 'key'})
+			const results = searchDebounce(searchVal, searchObj, {key: 'key'})
 			const ids = results.map(i => i.obj.id)
 			
 			const data: tableData[] = mainData.filter(i => ids.includes(i.log.id))
