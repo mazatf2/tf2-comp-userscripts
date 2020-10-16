@@ -1,4 +1,8 @@
 type steam64 = string
+type nickname = string
+type steam32 = string
+type unixTime = number
+type seconds = number
 
 export interface logList {
 	date: number
@@ -24,10 +28,14 @@ export interface searchLogsApi {
 	total: number
 }
 
-type nickname = string
-type steam32 = string
-type unixTime = number
-type seconds = number
+export interface fetchLogsOpts {
+	title: string
+	map: string,
+	uploader: steam64
+	player: steam64[]
+	limit: number
+	offset: number
+}
 
 export interface logstf_json {
 	'version': number,

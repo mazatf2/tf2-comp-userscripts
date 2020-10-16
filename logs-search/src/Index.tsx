@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import debounce from 'lodash.debounce'
 
 import {fetchLogs} from './fetch'
-import {searchLogsApi, logList} from './logstf_api'
+import {searchLogsApi, logList, fetchLogsOpts} from './logstf_api'
 import {extendComponents, LoglistTable} from './components/LoglistTable'
 import {highlight, search} from './sort/sort'
 import Fuzzysort from 'fuzzysort'
@@ -43,7 +43,7 @@ const App = () => {
 	
 	useEffect(() => {
 		const testData = async () => {
-			const t = await fetchLogs(steam64)
+			const t = await fetchLogs({player: [steam64]})
 			const data: searchLogsApi = await t.json()
 			
 			mainData = data.logs.map(i => newTableDataEntry(i, steam64))
