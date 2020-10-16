@@ -114,29 +114,48 @@ const App = () => {
 	
 	return <>
 		{mainData.length} | {tableData.length}
-		<label htmlFor="search">Search by:</label>
-		<select
-			id="search"
-			onChange={(e) => handleSelect(e)}
-		>
-			<option defaultValue="true" value="title">log title</option>
-			<option value="map">log map</option>
-		</select>
-		<input
-			type="text"
-			onChange={(e) => handleSearch(e)}
-		/>
 		
-		<label htmlFor="extend">Extend table with:</label>
-		<select
-			id="extend"
-			onChange={(e) => {
-				changeExtendTable(e.target.value)
-			}}
-		>
-			<option defaultValue="true" value="nothing">nothing</option>
-			<option value="PlayerStatsAll">player stats</option>
-		</select>
+		<div className="section field is-grouped">
+			<div className="control">
+				<label htmlFor="search" className="label" style={{marginTop: '0.5em'}}>Search by:</label>
+			</div>
+			<div className="control">
+				<div className="select">
+					<select
+						id="search"
+						onChange={(e) => handleSelect(e)}
+					>
+						<option defaultValue="true" value="title">log title</option>
+						<option value="map">log map</option>
+					</select>
+				</div>
+			</div>
+			<div className="control">
+				<input
+					type="text"
+					className="input"
+					onChange={(e) => handleSearch(e)}
+				/>
+			</div>
+			
+			
+			<div className="control">
+				<label htmlFor="extend" className="label" style={{marginTop: '0.5em'}}>Extend table with:</label>
+			</div>
+			<div className="control">
+				<div className="select">
+					<select
+						id="extend"
+						onChange={(e) => {
+							changeExtendTable(e.target.value)
+						}}
+					>
+						<option defaultValue="true" value="nothing">nothing</option>
+						<option value="PlayerStatsAll">player stats</option>
+					</select>
+				</div>
+			</div>
+		</div>
 		
 		<LoglistTable tableData={tableData} extendRightWith={extendTable} steam64={steam64}/>
 	</>
