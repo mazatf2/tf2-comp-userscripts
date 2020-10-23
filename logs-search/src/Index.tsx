@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom'
 import debounce from 'lodash.debounce'
 
 import {fetchLogs} from './fetch'
-import {searchLogsApi, logList, fetchLogsOpts} from './logstf_api'
+import {searchLogsApi, logList} from './logstf_api'
 import {extendComponents, LoglistTable} from './components/LoglistTable'
 import {highlight, search} from './sort/sort'
 import Fuzzysort from 'fuzzysort'
-import {SearchFormAdvanced, searchObj} from './components/searchforms/SearchFormAdvanced'
-import {SearchForm} from './components/searchforms/SearchForm'
+import {searchObj} from './components/searchforms/SearchFormAdvanced'
 import {SearchSelect} from './components/SearchSelect'
+import {FilterTableSelections} from './components/FilterTableSelections'
 
 export interface tableData {
 	steam64: string
@@ -36,10 +36,10 @@ const App = () => {
 	const [steam64, setSteam64] = useState<string>('76561197996199110')
 	
 	const [searchVal, setSearchVal] = useState<string>('')
-	const [searchTarget, setSearchTarget] = useState<keyof logList>('title')
+	const [searchTarget, setFilterTarget] = useState<keyof logList>('title')
 	const [tableData, setTableData] = useState<tableData[]>([])
 	
-	const [extendTable, changeExtendTable] = useState<extendComponents>('nothing')
+	const [extendTable, setExtendTable] = useState<extendComponents>('nothing')
 	
 	const searchRef = React.useRef('')
 	const selectRef = React.useRef('')
@@ -93,29 +93,29 @@ const App = () => {
 					key: searchTarget,
 					value: highlight(fuzzyResult),
 				}
-				
 			}
-			
 			setTableData(data)
 			console.log(results)
-			
 		}
-		
 		testData()
 		
 	}, [searchVal, searchTarget])
 	
-	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchVal(e.target.value)
-		searchRef.current = e.target.value
+	const handleFilterValue = (ev: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchVal(ev.target.value)
+		searchRef.current = ev.target.value
 	}
 	
-	const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		setSearchTarget(e.target.value)
-		selectRef.current = e.target.value
+	const handleFilterTarget = (ev: React.ChangeEvent<HTMLSelectElement>) => {
+		setFilterTarget(ev.target.value)
+		selectRef.current = ev.target.value
 	}
 	
-	const handleSubmit = (i: searchObj)=>{
+	const handleExtendTable = (ev: React.ChangeEvent<HTMLSelectElement>) => {
+		setExtendTable(ev.target.value)
+	}
+	
+	const handleSubmit = (i: searchObj) => {
 		console.log(i)
 	}
 	
@@ -123,47 +123,10 @@ const App = () => {
 		{mainData.length} | {tableData.length}
 		<SearchSelect onSubmit={handleSubmit}/>
 		
-		<div className="section field is-grouped">
-			<div className="control">
-				<label htmlFor="search" className="label" style={{marginTop: '0.5em'}}>Search by:</label>
-			</div>
-			<div className="control">
-				<div className="select">
-					<select
-						id="search"
-						onChange={(e) => handleSelect(e)}
-					>
-						<option defaultValue="true" value="title">log title</option>
-						<option value="map">log map</option>
-					</select>
-				</div>
-			</div>
-			<div className="control">
-				<input
-					type="text"
-					className="input"
-					onChange={(e) => handleSearch(e)}
-				/>
-			</div>
-			
-			
-			<div className="control">
-				<label htmlFor="extend" className="label" style={{marginTop: '0.5em'}}>Extend table with:</label>
-			</div>
-			<div className="control">
-				<div className="select">
-					<select
-						id="extend"
-						onChange={(e) => {
-							changeExtendTable(e.target.value)
-						}}
-					>
-						<option defaultValue="true" value="nothing">nothing</option>
-						<option value="PlayerStatsAll">player stats</option>
-					</select>
-				</div>
-			</div>
-		</div>
+		<FilterTableSelections
+			onFilterTargetChange={handleFilterTarget}
+			onFilterValueChange={handleFilterValue}
+			onExtendTableChange={handleExtendTable}/>
 		
 		<LoglistTable tableData={tableData} extendRightWith={extendTable} steam64={steam64}/>
 	</>

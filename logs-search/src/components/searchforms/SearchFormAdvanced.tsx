@@ -7,6 +7,7 @@ import {Label} from './components/Label'
 import {FieldHorizontal} from './components/FieldHorizontal'
 import {FieldBody} from './components/FieldBody'
 import {PlayerSelect} from './rows/PlayerSelect'
+import {Form} from './components/Form'
 
 export const isMaybeValidSteamId = (val: string) => {
 	if (val === undefined) return true
@@ -45,9 +46,8 @@ export const SearchFormAdvanced = ({onSubmit, ...props}: { onSubmit: searchObj }
 	const {handleSubmit, register, errors} = useForm()
 	
 	return (
-		<form
+		<Form
 			onSubmit={handleSubmit(onSubmit)}
-			className="section"
 		>
 			<FieldHorizontal>
 				<Label>Title</Label>
@@ -100,6 +100,6 @@ export const SearchFormAdvanced = ({onSubmit, ...props}: { onSubmit: searchObj }
 					</div>
 				</FieldBody>
 			</FieldHorizontal>
-		</form>
+		</Form>
 	)
 }

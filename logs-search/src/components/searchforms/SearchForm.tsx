@@ -6,14 +6,14 @@ import {FieldBody} from './components/FieldBody'
 import {Button} from './components/Button'
 import {isMaybeValidSteamIdList, searchObj} from './SearchFormAdvanced'
 import {PlayerSelect} from './rows/PlayerSelect'
+import {Form} from './components/Form'
 
 export const SearchForm = ({onSubmit, ...props}: { onSubmit: searchObj }) => {
 	const {handleSubmit, register, errors} = useForm()
 	
 	return (
-		<form
+		<Form
 			onSubmit={handleSubmit(onSubmit)}
-			className="section"
 		>
 			<PlayerSelect register={register({
 				validate: val => isMaybeValidSteamIdList(val),
@@ -35,6 +35,6 @@ export const SearchForm = ({onSubmit, ...props}: { onSubmit: searchObj }) => {
 					</div>
 				</FieldBody>
 			</FieldHorizontal>
-		</form>
+		</Form>
 	)
 }

@@ -3,7 +3,6 @@ import Highlighter from 'react-highlight-words'
 
 import {tableData} from '../Index'
 import {highlight2} from '../sort/sort'
-import {fetchLogData} from '../fetch'
 import {PlayerStatsAll} from './PlayerStatsAll'
 
 export type extendComponents = 'PlayerStatsAll' | 'nothing'
@@ -92,23 +91,26 @@ export const LoglistTable = ({tableData, extendRightWith, steam64: steam64}: Log
 			className="section is-fullwidth is-fullheight"
 			style={{overflow: 'auto'}}
 		>
-			<table
-				className="table is-narrow is-hoverable"
-			>
-				<thead>
-				<tr>
-					{keys.map(i => <td key={i}>{i}</td>)}
-					{extendRightWith === 'PlayerStatsAll' && playerStatsAllKeys.map(i => <td key={i}>{i}</td>)}
-				</tr>
-				</thead>
-				<tbody>
-				{
-					tableData
-						.sort((a, b) => b.fuzzyResult.score - a.fuzzyResult.score)
-						.map(i => <Row key={i.log.id} entry={i} extendRightWith={extendRightWith} steam64={steam64}/>)
-				}
-				</tbody>
-			</table>
+			<div className="container">
+				<table
+					className="table is-narrow is-hoverable"
+				>
+					<thead>
+					<tr>
+						{keys.map(i => <td key={i}>{i}</td>)}
+						{extendRightWith === 'PlayerStatsAll' && playerStatsAllKeys.map(i => <td key={i}>{i}</td>)}
+					</tr>
+					</thead>
+					<tbody>
+					{
+						tableData
+							.sort((a, b) => b.fuzzyResult.score - a.fuzzyResult.score)
+							.map(i => <Row key={i.log.id} entry={i} extendRightWith={extendRightWith}
+								steam64={steam64}/>)
+					}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	)
 }
