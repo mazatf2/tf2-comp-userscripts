@@ -7,6 +7,9 @@ import {searchLogsApi, logList, fetchLogsOpts} from './logstf_api'
 import {extendComponents, LoglistTable} from './components/LoglistTable'
 import {highlight, search} from './sort/sort'
 import Fuzzysort from 'fuzzysort'
+import {SearchFormAdvanced, searchObj} from './components/searchforms/SearchFormAdvanced'
+import {SearchForm} from './components/searchforms/SearchForm'
+import {SearchSelect} from './components/SearchSelect'
 
 export interface tableData {
 	steam64: string
@@ -112,8 +115,13 @@ const App = () => {
 		selectRef.current = e.target.value
 	}
 	
+	const handleSubmit = (i: searchObj)=>{
+		console.log(i)
+	}
+	
 	return <>
 		{mainData.length} | {tableData.length}
+		<SearchSelect onSubmit={handleSubmit}/>
 		
 		<div className="section field is-grouped">
 			<div className="control">

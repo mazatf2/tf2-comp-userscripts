@@ -13,6 +13,7 @@
   "react": "^16.13.1",
   "react-dom": "^16.13.1",
   "react-highlight-words": "^0.16.0",
+  "react-hook-form": "^6.9.4",
   "smart-request-balancer": "^2.1.1",
   "steamid": "^1.1.3"
  },
