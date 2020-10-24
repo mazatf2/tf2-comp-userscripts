@@ -8,14 +8,16 @@ import {playerStatsAllKeys} from './LoglistTable'
 type entry = { entry: tableData, steam64: string }
 
 const tds = (logData: logstf_json, steam32: string) => {
-	return playerStatsAllKeys.map(i => <td>{logData.players[steam32][i]}</td>)
+	return playerStatsAllKeys.map(i => <td key={i.key}>{logData.players[steam32][i.key]}</td>)
 }
 
-const Extend = ({entry, steam64}: entry) => {
+export const PlayerStatsAll = ({entry, steam64}: entry) => {
+	const {log} = entry
+	
 	const [logData, setLogData] = useState<logstf_json | null>(null)
 	
 	useEffect(() => {
-		fetchLogData(entry.log.id)
+		fetchLogData(log.id)
 			.then(r => r.json())
 			.then(i => setLogData(i))
 	}, [])
@@ -28,13 +30,4 @@ const Extend = ({entry, steam64}: entry) => {
 			{logData && tds(logData, steam32)}
 		</>
 	)
-}
-
-export const PlayerStatsAll = ({entry, steam64}: entry) => {
-	return (
-		<>
-			<Extend entry={entry} steam64={steam64}/>
-		</>
-	)
-	
 }
