@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import SteamID from 'steamid'
-import {tableData} from '../Index'
-import {fetchLogData} from '../fetch'
-import {logstf_json} from '../logstf_api'
+import {tableData} from '../../Index'
+import {fetchLogData} from '../../fetch'
+import {logstf_json} from '../../logstf_api'
 import {playerStatsAllKeys} from './LoglistTable'
 
 type entry = { entry: tableData, steam64: string }

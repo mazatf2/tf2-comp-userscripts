@@ -1,10 +1,7 @@
-import React, {useEffect, useState} from 'react'
-import Highlighter from 'react-highlight-words'
-
-import {tableData} from '../Index'
-import {highlight2} from '../sort/sort'
-import {PlayerStatsAll} from './PlayerStatsAll'
-import {Button} from './searchforms/components/Button'
+import React, {useState} from 'react'
+import {tableData} from '../../Index'
+import {Button} from '../searchforms/components/Button'
+import {TableRow} from './TableRow'
 
 export type extendComponents = 'PlayerStatsAll' | 'nothing'
 
@@ -142,49 +139,7 @@ export const playerStatsAllKeys: labelObj[] = [
 	},
 ]
 
-const labelKeys = [...keys, ...playerStatsAllKeys]
-
-const Row = ({
-				 entry,
-				 extendRightWith,
-				 steam64,
-			 }: { entry: tableData, extendRightWith: extendComponents, steam64: string }) => {
-	const {log, fuzzyResult, highlight} = entry
-	
-	let highLighter = ''
-	if (highlight.key) {
-		const words = highlight2(fuzzyResult)
-		
-		highLighter = (<Highlighter
-			searchWords={words}
-			textToHighlight={log[highlight.key]}
-			autoEscape={true}
-		/>)
-	}
-	
-	const is = (str: string) => {
-		if (highlight.key && str === highlight.key)
-			return highLighter
-		return false
-	}
-	
-	return (
-		<tr
-			data-score={fuzzyResult.score}
-		>
-			<td>{log.id}</td>
-			<td>{is('title') || log.title}</td>
-			<td>{is('map') || log.map}</td>
-			<td>{log.players}</td>
-			<td>{log.date}</td>
-			<td>{log.views}</td>
-			{
-				(extendRightWith && extendRightWith === 'PlayerStatsAll') &&
-				<PlayerStatsAll entry={entry} steam64={steam64}/>
-			}
-		</tr>
-	)
-}
+export const labelKeys = [...keys, ...playerStatsAllKeys]
 
 export type LogListTableProps = {
 	tableData: tableData[]
@@ -268,7 +223,7 @@ export const LoglistTable = ({tableData, extendRightWith, steam64: steam64}: Log
 					{
 						sortedTableData
 							//.sort((a, b) => b.fuzzyResult.score - a.fuzzyResult.score)
-							.map(i => <Row key={i.log.id} entry={i} extendRightWith={extendRightWith}
+							.map(i => <TableRow key={i.log.id} entry={i} extendRightWith={extendRightWith}
 								steam64={steam64}/>)
 					}
 					</tbody>
