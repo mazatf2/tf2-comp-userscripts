@@ -52,9 +52,10 @@ export type LogListTableProps = {
 	tableData: tableData[]
 	extendRightWith: extendComponents
 	steam64: string
+	onSelect: (id: number) => void
 }
 
-export const LoglistTable = ({tableData, extendRightWith, steam64: steam64}: LogListTableProps) => {
+export const LoglistTable = ({tableData, extendRightWith, steam64: steam64, onSelect}: LogListTableProps) => {
 	const [sortBy, setSortBy] = useState<string | null>(null)
 	const [sortTarget, setSortTarget] = useState<string | null>(null)
 	const [sortDir, setSortDir] = useState<boolean>(true)
@@ -186,6 +187,7 @@ export const LoglistTable = ({tableData, extendRightWith, steam64: steam64}: Log
 				>
 					<thead>
 					<tr>
+						<td>{/* selected */}</td>
 						{
 							labelsMain.map(i => Label(i, 'labelsMain'))
 						}
@@ -199,6 +201,7 @@ export const LoglistTable = ({tableData, extendRightWith, steam64: steam64}: Log
 						sortedTableData
 							//.sort((a, b) => b.fuzzyResult.score - a.fuzzyResult.score)
 							.map(i => <TableRow
+								onSelect={onSelect}
 								key={i.log.id}
 								entry={i}
 								extend={extend(i, steam64)}

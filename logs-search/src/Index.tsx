@@ -10,6 +10,10 @@ import Fuzzysort from 'fuzzysort'
 import {searchObj} from './components/searchforms/SearchFormAdvanced'
 import {SearchSelect} from './components/SearchSelect'
 import {FilterTableSelections} from './components/FilterTableSelections'
+import {Button} from './components/searchforms/components/Button'
+import {Label} from './components/searchforms/components/Label'
+import {FieldBody} from './components/searchforms/components/FieldBody'
+import {FieldHorizontal} from './components/searchforms/components/FieldHorizontal'
 
 export interface tableData {
 	steam64: string
@@ -19,6 +23,7 @@ export interface tableData {
 		key: keyof logList | null,
 		value: string
 	}
+	selected: boolean
 }
 
 const newTableDataEntry = (i: logList, steam64: string): tableData => {
@@ -27,6 +32,7 @@ const newTableDataEntry = (i: logList, steam64: string): tableData => {
 		log: i,
 		fuzzyResult: {indexes: [], target: '', score: Infinity},
 		highlight: {key: null, value: ''},
+		selected: false,
 	}
 }
 
@@ -38,6 +44,7 @@ const App = () => {
 	const [searchVal, setSearchVal] = useState<string>('')
 	const [searchTarget, setFilterTarget] = useState<keyof logList>('title')
 	const [tableData, setTableData] = useState<tableData[]>([])
+	const [selectedLogs, setSelectedLogs] = useState<number[]>([])
 	
 	const [extendTable, setExtendTable] = useState<extendComponents>('nothing')
 	
@@ -119,6 +126,25 @@ const App = () => {
 		console.log(i)
 	}
 	
+	const selectAll = () => {
+		const deepCopy: tableData[] = JSON.parse(JSON.stringify(tableData))
+		deepCopy.forEach(i => i.selected = true)
+		
+		setTableData(deepCopy)
+	}
+	
+	const selectId = (id: number) => {
+		const deepCopy: tableData[] = JSON.parse(JSON.stringify(tableData))
+		const log = deepCopy.find(i => i.log.id === id) as tableData
+		log.selected = !log.selected
+		
+		setTableData(deepCopy)
+	}
+	
+	const getSelected = () => {
+		return tableData.filter(i => i.selected)
+	}
+	
 	return <>
 		{mainData.length} | {tableData.length}
 		<SearchSelect onSubmit={handleSubmit}/>
@@ -128,7 +154,25 @@ const App = () => {
 			onFilterValueChange={handleFilterValue}
 			onExtendTableChange={handleExtendTable}/>
 		
-		<LoglistTable tableData={tableData} extendRightWith={extendTable} steam64={steam64}/>
+		<div className="section container">
+			<FieldHorizontal>
+				<Label></Label>
+				<FieldBody>
+					<div className="field is-grouped">
+						<Button
+							onClick={selectAll}>
+							Select All
+						</Button>
+					</div>
+				</FieldBody>
+			</FieldHorizontal>
+		</div>
+		
+		<LoglistTable
+			onSelect={(id: number) => {selectId(id)}}
+			tableData={tableData}
+			extendRightWith={extendTable}
+			steam64={steam64}/>
 	</>
 }
 

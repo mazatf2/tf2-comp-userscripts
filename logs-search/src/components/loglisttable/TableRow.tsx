@@ -6,9 +6,10 @@ import React from 'react'
 type props = {
 	entry: tableData,
 	extend: JSX.Element | null
+	onSelect: (id: number) => void
 }
 
-export const TableRow = ({entry, extend}: props) => {
+export const TableRow = ({entry, extend, onSelect}: props) => {
 	const {log, fuzzyResult, highlight} = entry
 	
 	let highLighter = ''
@@ -32,6 +33,14 @@ export const TableRow = ({entry, extend}: props) => {
 		<tr
 			data-score={fuzzyResult.score}
 		>
+			<td>
+				<input
+					type="checkbox"
+					className="checkbox"
+					checked={entry.selected}
+					onChange={() => onSelect(log.id)}
+				/>
+			</td>
 			<td>{log.id}</td>
 			<td>{is('title') || log.title}</td>
 			<td>{is('map') || log.map}</td>
