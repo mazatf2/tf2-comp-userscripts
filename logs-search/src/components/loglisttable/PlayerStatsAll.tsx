@@ -1,17 +1,124 @@
 import React, {useEffect, useState} from 'react'
-import SteamID from 'steamid'
 import {tableData} from '../../Index'
 import {fetchLogData} from '../../fetch'
 import {logstf_json} from '../../logstf_api'
-import {playerStatsAllKeys} from './LoglistTable'
+import {labelObj} from './LoglistTable'
 
-type entry = { entry: tableData, steam64: string }
+type entry = { entry: tableData, steam32: string }
 
-const tds = (logData: logstf_json, steam32: string) => {
-	return playerStatsAllKeys.map(i => <td key={i.key}>{logData.players[steam32][i.key]}</td>)
+export const playerStatsAllKeys = (steam32: string): labelObj[] => {
+	const keys = [
+		{
+			'key': 'kills',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'deaths',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'assists',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'suicides',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'kapd',
+			'sortFn': 'number', //FIXME
+		},
+		{
+			'key': 'kpd',
+			'sortFn': 'number', //FIXME
+		},
+		{
+			'key': 'dmg',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'dmg_real',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'dt',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'dt_real',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'hr',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'lks',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'as',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'dapd',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'dapm',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'drops',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'medkits',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'medkits_hp',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'backstabs',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'headshots',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'headshots_hit',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'sentries',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'heal',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'cpc',
+			'sortFn': 'number',
+		},
+		{
+			'key': 'ic',
+			'sortFn': 'number',
+		},
+	]
+	return keys.map(i => {
+		return {...i, path: ['players', steam32, i.key]}
+	})
 }
 
-export const PlayerStatsAll = ({entry, steam64}: entry) => {
+const tds = (logData: logstf_json, steam32: string) => {
+	return playerStatsAllKeys(steam32).map(i => <td key={i.key}>{logData.players[steam32][i.key]}</td>)
+}
+
+export const PlayerStatsAll = ({entry, steam32}: entry) => {
 	const {log} = entry
 	
 	const [logData, setLogData] = useState<logstf_json | null>(null)
@@ -21,9 +128,6 @@ export const PlayerStatsAll = ({entry, steam64}: entry) => {
 			.then(r => r.json())
 			.then(i => setLogData(i))
 	}, [])
-	
-	const id = new SteamID(steam64)
-	const steam32 = id.getSteam3RenderedID()
 	
 	return (
 		<>

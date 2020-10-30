@@ -1,15 +1,14 @@
 import {tableData} from '../../Index'
 import {highlight2} from '../../sort/fuzzysort'
 import Highlighter from 'react-highlight-words'
-import {PlayerStatsAll} from './PlayerStatsAll'
 import React from 'react'
-import {extendComponents} from './LoglistTable'
 
-export const TableRow = ({
-							 entry,
-							 extendRightWith,
-							 steam64,
-						 }: { entry: tableData, extendRightWith: extendComponents, steam64: string }) => {
+type props = {
+	entry: tableData,
+	extend: JSX.Element | null
+}
+
+export const TableRow = ({entry, extend}: props) => {
 	const {log, fuzzyResult, highlight} = entry
 	
 	let highLighter = ''
@@ -40,8 +39,7 @@ export const TableRow = ({
 			<td>{log.date}</td>
 			<td>{log.views}</td>
 			{
-				(extendRightWith && extendRightWith === 'PlayerStatsAll') &&
-				<PlayerStatsAll entry={entry} steam64={steam64}/>
+				extend
 			}
 		</tr>
 	)
