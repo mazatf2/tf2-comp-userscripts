@@ -887,6 +887,46 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@bit/mazatf.components.log-db@1.0.3":
+  version "1.0.3"
+  resolved "https://node.bit.dev/mazatf.components.log-db/-/mazatf.components.log-db-1.0.3.tgz#46a8d6b4b4910545133f934146588e64cfffa420"
+  integrity sha1-RqjWtLSRBUUTP5NBRliOZM//pCA=
+  dependencies:
+    "@bit/mazatf.components.medals" "1.0.0"
+    "@bit/mazatf.components.player" "1.0.3"
+    "@bit/mazatf.components.process-log" "1.0.3"
+
+"@bit/mazatf.components.medals@1.0.0":
+  version "1.0.0"
+  resolved "https://node.bit.dev/mazatf.components.medals/-/mazatf.components.medals-1.0.0.tgz#e25340f84208f0b915dcb82cfa8dc1500ab9d829"
+  integrity sha1-4lNA+EII8LkV3Lgs+o3BUAq52Ck=
+
+"@bit/mazatf.components.player@1.0.3":
+  version "1.0.3"
+  resolved "https://node.bit.dev/mazatf.components.player/-/mazatf.components.player-1.0.3.tgz#e138ded45c13a1118e34d3602c9b7449790ff726"
+  integrity sha1-4Tje1FwToRGONNNgLJt0SXkP9yY=
+  dependencies:
+    "@bit/mazatf.components.utils" "1.0.3"
+
+"@bit/mazatf.components.process-log@1.0.3", "@bit/mazatf.components.process-log@^1.0.3":
+  version "1.0.3"
+  resolved "https://node.bit.dev/mazatf.components.process-log/-/mazatf.components.process-log-1.0.3.tgz#8dd066aa1194ef39789b72d00e732b2a7ff52b10"
+  integrity sha1-jdBmqhGU7zl4m3LQDnMrKn/1KxA=
+  dependencies:
+    "@bit/mazatf.components.log-db" "1.0.3"
+
+"@bit/mazatf.components.utils@1.0.3":
+  version "1.0.3"
+  resolved "https://node.bit.dev/mazatf.components.utils/-/mazatf.components.utils-1.0.3.tgz#35efb5e6ea5f72b5199fc3e7b04701449d0b8361"
+  integrity sha1-Ne+15upfcrUZn8PnsEcBRJ0Lg2E=
+  dependencies:
+    "@bit/mazatf.components.weapon_lognames_def" "1.0.3"
+
+"@bit/mazatf.components.weapon_lognames_def@1.0.3":
+  version "1.0.3"
+  resolved "https://node.bit.dev/mazatf.components.weapon_lognames_def/-/mazatf.components.weapon_lognames_def-1.0.3.tgz#56678f97334d30c53b3cc85e9d92769f4adb5d61"
+  integrity sha1-VmePlzNNMMU7PMhenZJ2n0rbXWE=
+
 "@iarna/toml@^2.2.0":
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
@@ -979,6 +1019,13 @@
   version "16.9.8"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.8.tgz#fe4c1e11dfc67155733dfa6aa65108b4971cb423"
   integrity sha512-ykkPQ+5nFknnlU6lDd947WbQ6TE3NNzbQAkInC2EKY1qeYdTKp7onFusmYZb+ityzx2YviqT6BXSu+LyWWJwcA==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-table@^7.0.25":
+  version "7.0.25"
+  resolved "https://registry.yarnpkg.com/@types/react-table/-/react-table-7.0.25.tgz#79efba1c58149d75b3c030634ed36215b7ba8390"
+  integrity sha512-MLWxIiFKIW2CjcB8yQ5LfLNyVfwXfIYm2yrQfTkroK5tJ3Ai+Xzq73EQcdKWQvi/nLk431v2WV0cf30VQV+5Ow==
   dependencies:
     "@types/react" "*"
 
@@ -4503,6 +4550,11 @@ react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-table@^7.6.1:
+  version "7.6.1"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.6.1.tgz#33ad2bfc58de619678694c5452597544f4864266"
+  integrity sha512-XQyvombPoFbNiDHWAXdxbN78kFpsT1/aJuRSupFfBhO3FJtEVIIq2xbV1NvLzrd1YwfCYRm07ln5OHlfz0SXBg==
 
 react@^16.13.1:
   version "16.13.1"
