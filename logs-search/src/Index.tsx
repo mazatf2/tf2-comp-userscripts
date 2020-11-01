@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react'
 import ReactDOM from 'react-dom'
 import debounce from 'lodash.debounce'
-
+import SteamID from 'steamid'
 import {fetchLogs} from './fetch'
 import {searchLogsApi, logList} from './logstf_api'
 import {extendComponents, LoglistTable} from './components/loglisttable/LoglistTable'
@@ -14,6 +14,7 @@ import {Button} from './components/searchforms/components/Button'
 import {Label} from './components/searchforms/components/Label'
 import {FieldBody} from './components/searchforms/components/FieldBody'
 import {FieldHorizontal} from './components/searchforms/components/FieldHorizontal'
+import {CombineLogs} from './components/combinelogs/CombineLogs'
 
 export interface tableData {
 	steam64: string
@@ -50,6 +51,9 @@ const App = () => {
 	
 	const searchRef = React.useRef('')
 	const selectRef = React.useRef('')
+	
+	const id = new SteamID(steam64)
+	const steam32 = id.getSteam3RenderedID()
 	
 	useEffect(() => {
 		const testData = async () => {
@@ -154,6 +158,10 @@ const App = () => {
 			onFilterValueChange={handleFilterValue}
 			onExtendTableChange={handleExtendTable}/>
 		
+			
+		<CombineLogs
+			steam32={steam32}
+			ids={[2147695, 2147668]}/>
 		<div className="section container">
 			<FieldHorizontal>
 				<Label></Label>
