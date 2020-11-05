@@ -1,0 +1,15 @@
+.noBold {
+	font-weight: normal;
+}
+
+/* team spirit dark https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=5885A2*/
+.blu {
+	background: #285873;
+	color: white;
+}
+
+/* team spirit dark */
+.red {
+	background: #820015;
+	color: white;
+}

@@ -1,0 +1,54 @@
+/* https://github.com/Qixalite/tf2-classfont/blob/1.1/css/tf2icons.css */
+/* https://github.com/Qixalite/tf2-classfont/blob/1.1/LICENSE */
+
+.tf2-Heavy:before {
+    content: "\1f4aa";
+}
+
+.tf2-Medic:before {
+    content: "\1f497";
+}
+
+.tf2-Pyro:before {
+    content: "\1f525";
+}
+
+.tf2-Scout:before {
+    content: "\1f407";
+}
+
+.tf2-Sniper:before {
+    content: "\1f3b7";
+}
+
+.tf2-Soldier:before {
+    content: "\1f4a5";
+}
+
+.tf2-Spy:before {
+    content: "\1f4e6";
+}
+
+.tf2-Demo:before {
+    content: "\1f4a3";
+}
+
+.tf2-Engineer:before {
+    content: "\1f527";
+}
+
+.tf2-FlankSoldier:before {
+    content: "\1f400";
+}
+
+.tf2-PocketSoldier:before {
+    content: "\1f418";
+}
+
+.tf2-FlankScout:before {
+    content: "\1f43f";
+}
+
+.tf2-PocketScout:before {
+    content: "\1f416";
+}
