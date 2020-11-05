@@ -280,3 +280,50 @@ export const logstf_json_player_labels = {
 	'cpc': 'cp captures',
 	'ic': 'intel captures',
 }
+
+export const logstf_json_player_abbr = {
+	
+	// 'team': 'team',
+	// 'class_stats': 'class_stats[]',
+	'kills': 'K',
+	'deaths': 'D',
+	'assists': 'A',
+	'suicides': 'suicides',
+	'kapd': 'kills and assists per death ratio',
+	'kpd': 'K/D',
+	'dmg': 'DA',
+	'dmg_real': 'damage (real)',
+	'dt': 'DT',
+	'dt_real': 'damage taken (real)',
+	'hr': 'heals received',
+	'lks': 'killstreak',
+	'as': 'AS',
+	'dapd': 'DA/D',
+	'dapm': 'DA/M',
+	// 'ubers': 'ubers{}',
+	// 'ubertypes': 'ubertypes',
+	'drops': 'drops',
+	'medkits': 'medkits',
+	'medkits_hp': 'medkits hp received',
+	'backstabs': 'BS',
+	'headshots': 'HS',
+	'headshots_hit': 'HS',
+	'sentries': 'sentries built',
+	'heal': 'heal',
+	'cpc': 'CAP',
+	'ic': 'intel captures',
+}
+
+export const localizedClass ={
+	scout: 			'Scout',
+	soldier: 		'Soldier',
+	pyro: 			'Pyro',
+	
+	demoman: 		'Demoman',
+	heavyweapons: 	'Heavy',
+	engineer: 		'Engineer',
+	
+	medic: 			'Medic',
+	sniper: 		'Sniper',
+	spy: 			'Spy',
+}

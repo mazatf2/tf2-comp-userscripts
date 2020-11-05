@@ -847,6 +847,13 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
+"@babel/runtime@^7.10.1", "@babel/runtime@^7.11.1", "@babel/runtime@^7.11.2":
+  version "7.12.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
+  integrity sha512-plcc+hbExy3McchJCEQG3knOsuh3HH+Prx1P6cLIkET/0dLuQDEnrT+s27Axgc9bqfsmNUNHfscgMUdBpC9xfg==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.4.4", "@babel/runtime@^7.8.4":
   version "7.11.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.11.2.tgz#f549c13c754cc40b87644b9fa9f09a6a95fe0736"
@@ -887,33 +894,33 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@bit/mazatf.components.log-db@1.0.3":
-  version "1.0.3"
-  resolved "https://node.bit.dev/mazatf.components.log-db/-/mazatf.components.log-db-1.0.3.tgz#46a8d6b4b4910545133f934146588e64cfffa420"
-  integrity sha1-RqjWtLSRBUUTP5NBRliOZM//pCA=
+"@bit/mazatf.components.log-db@1.0.4":
+  version "1.0.4"
+  resolved "https://node.bit.dev/mazatf.components.log-db/-/mazatf.components.log-db-1.0.4.tgz#9ff74c5a9ee16305fb31e71727b783384c02d314"
+  integrity sha1-n/dMWp7hYwX7MecXJ7eDOEwC0xQ=
   dependencies:
     "@bit/mazatf.components.medals" "1.0.0"
-    "@bit/mazatf.components.player" "1.0.3"
-    "@bit/mazatf.components.process-log" "1.0.3"
+    "@bit/mazatf.components.player" "1.0.4"
+    "@bit/mazatf.components.process-log" "1.0.4"
 
 "@bit/mazatf.components.medals@1.0.0":
   version "1.0.0"
   resolved "https://node.bit.dev/mazatf.components.medals/-/mazatf.components.medals-1.0.0.tgz#e25340f84208f0b915dcb82cfa8dc1500ab9d829"
   integrity sha1-4lNA+EII8LkV3Lgs+o3BUAq52Ck=
 
-"@bit/mazatf.components.player@1.0.3":
-  version "1.0.3"
-  resolved "https://node.bit.dev/mazatf.components.player/-/mazatf.components.player-1.0.3.tgz#e138ded45c13a1118e34d3602c9b7449790ff726"
-  integrity sha1-4Tje1FwToRGONNNgLJt0SXkP9yY=
+"@bit/mazatf.components.player@1.0.4":
+  version "1.0.4"
+  resolved "https://node.bit.dev/mazatf.components.player/-/mazatf.components.player-1.0.4.tgz#0423abc472fd90c7c792403fc5fad5af47895267"
+  integrity sha1-BCOrxHL9kMfHkkA/xfrVr0eJUmc=
   dependencies:
     "@bit/mazatf.components.utils" "1.0.3"
 
-"@bit/mazatf.components.process-log@1.0.3", "@bit/mazatf.components.process-log@^1.0.3":
-  version "1.0.3"
-  resolved "https://node.bit.dev/mazatf.components.process-log/-/mazatf.components.process-log-1.0.3.tgz#8dd066aa1194ef39789b72d00e732b2a7ff52b10"
-  integrity sha1-jdBmqhGU7zl4m3LQDnMrKn/1KxA=
+"@bit/mazatf.components.process-log@1.0.4", "@bit/mazatf.components.process-log@^1.0.4":
+  version "1.0.4"
+  resolved "https://node.bit.dev/mazatf.components.process-log/-/mazatf.components.process-log-1.0.4.tgz#fc250d3d98bd9c3653a0cff556c27ab5332e359c"
+  integrity sha1-/CUNPZi9nDZToM/1VsJ6tTMuNZw=
   dependencies:
-    "@bit/mazatf.components.log-db" "1.0.3"
+    "@bit/mazatf.components.log-db" "1.0.4"
 
 "@bit/mazatf.components.utils@1.0.3":
   version "1.0.3"
@@ -1584,6 +1591,11 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+classnames@2.x, classnames@^2.2.1, classnames@^2.2.6:
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
+  integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
+
 cli-cursor@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cli-cursor/-/cli-cursor-2.1.0.tgz#b35dac376479facc3e94747d41d0d0f5238ffcb5"
@@ -2098,6 +2110,11 @@ diffie-hellman@^5.0.0:
     bn.js "^4.1.0"
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
+
+dom-align@^1.7.0:
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/dom-align/-/dom-align-1.12.0.tgz#56fb7156df0b91099830364d2d48f88963f5a29c"
+  integrity sha512-YkoezQuhp3SLFGdOlr5xkqZ640iXrnHAwVYcDg8ZKRUtO7mSzSC2BA5V0VuyAwPSJA4CLIc6EDDJh4bEsD2+zA==
 
 dom-serializer@0:
   version "0.2.2"
@@ -4522,6 +4539,53 @@ range-parser@~1.2.1:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
 
+rc-align@^4.0.0:
+  version "4.0.9"
+  resolved "https://registry.yarnpkg.com/rc-align/-/rc-align-4.0.9.tgz#46d8801c4a139ff6a65ad1674e8efceac98f85f2"
+  integrity sha512-myAM2R4qoB6LqBul0leaqY8gFaiECDJ3MtQDmzDo9xM9NRT/04TvWOYd2YHU9zvGzqk9QXF6S9/MifzSKDZeMw==
+  dependencies:
+    "@babel/runtime" "^7.10.1"
+    classnames "2.x"
+    dom-align "^1.7.0"
+    rc-util "^5.3.0"
+    resize-observer-polyfill "^1.5.1"
+
+rc-motion@^2.0.0:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/rc-motion/-/rc-motion-2.3.4.tgz#69fe1313754ee1e746e42ec971e361cbc755456e"
+  integrity sha512-La9JjfM58Vrwds1wM9OAkRTWsGeVqNnftI1YFti2WtaA2Ernk2vjbVio9hGbzhF0EvGrEvrzS96Mx/6lGT6Z0w==
+  dependencies:
+    "@babel/runtime" "^7.11.1"
+    classnames "^2.2.1"
+    rc-util "^5.2.1"
+
+rc-tooltip@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/rc-tooltip/-/rc-tooltip-5.0.1.tgz#b82c4259604d2cb62ca610ed7932dd37fc6ef61d"
+  integrity sha512-3AnxhUS0j74xAV3khrKw8o6rg+Ima3nw09DJBezMPnX3ImQUAnayWsPSlN1mEnihjA43rcFkGM1emiKE+CXyMQ==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    rc-trigger "^5.0.0"
+
+rc-trigger@^5.0.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/rc-trigger/-/rc-trigger-5.1.0.tgz#60ad239a4db005f84ea3755dc5e8523d44f53828"
+  integrity sha512-qt1etbuLn4EK7d+dl6PqnGGu9P5fJMYo68eT1xkIDdgLIjCUwIVVbTF/i9JUdLvwLPtov7vaRa7oPPqkT2qTzg==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    classnames "^2.2.6"
+    rc-align "^4.0.0"
+    rc-motion "^2.0.0"
+    rc-util "^5.5.0"
+
+rc-util@^5.2.1, rc-util@^5.3.0, rc-util@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.5.0.tgz#76321bcb5c12f01f42bff9b971f170ff19506e5a"
+  integrity sha512-YJB+zZGvCll/bhxXRVLAekr7lOvTgqMlRIhgINoINfUek7wQvi5sft46NOi3yYUYhocpuW4k8+5okW46sBsZAQ==
+  dependencies:
+    react-is "^16.12.0"
+    shallowequal "^1.1.0"
+
 react-dom@^16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.13.1.tgz#c1bd37331a0486c078ee54c4740720993b2e0e7f"
@@ -4546,7 +4610,7 @@ react-hook-form@^6.9.4:
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-6.9.4.tgz#750f4d115f11e53600977f829ea09ba90f9ea99f"
   integrity sha512-9zD9iKYt6pN6aUxKvJycAmnMGuNmZJzO11V+uOxiQkq/8DncomqROjqdck2u2/wbDYN8/mAFamQmmBaIkn4ziw==
 
-react-is@^16.8.1:
+react-is@^16.12.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -4713,6 +4777,11 @@ request@^2.88.0:
     tough-cookie "~2.5.0"
     tunnel-agent "^0.6.0"
     uuid "^3.3.2"
+
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
 
 resolve-from@^3.0.0:
   version "3.0.0"
@@ -4892,6 +4961,11 @@ shallow-copy@~0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/shallow-copy/-/shallow-copy-0.0.1.tgz#415f42702d73d810330292cc5ee86eae1a11a170"
   integrity sha1-QV9CcC1z2BAzApLMXuhurhoRoXA=
+
+shallowequal@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
+  integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
 
 shebang-command@^1.2.0:
   version "1.2.0"

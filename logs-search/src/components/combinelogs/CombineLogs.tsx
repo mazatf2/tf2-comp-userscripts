@@ -1,25 +1,33 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import ProcessLog from '@bit/mazatf.components.process-log'
-import {safeUseLayoutEffect, useTable} from 'react-table'
-import {logstf_json} from '../../logstf_api'
+import {sum} from '@bit/mazatf.components.utils'
+import {useSortBy, useTable} from 'react-table'
 import {fetchLogData} from '../../fetch'
+import {Abbr} from './Abbr'
+import './CombineLogs.css'
+import {ClassList} from './cells/ClassList'
+import {logstf_json} from '../../logstf_api'
 
-const testData = async (logs, steam32) => {
-	const processLog = new ProcessLog()
-	const promises = logs.map(async i => await processLog.newLog(i, steam32))
+const processLogs = async (logs, steam32: number) => {
+	const handle = new ProcessLog()
+	const promises = logs.map(async i => await handle.newLog(i, steam32))
 	
-	const result = await processLog.db
+	const result = await handle.db
 	console.log(result)
+	return result
 }
-
 
 type props = {
 	ids: number[]
 	steam32: number
 }
 
+export const sumNoDecimals = (arr: number[]) => Number(sum(arr).toFixed(0))
+
 export const CombineLogs = ({ids, steam32}: props) => {
-	const [playerLog, setPlayerLog] = useState<logstf_json[]>([])
+	const [logsArr, setLogsArr] = useState([])
+	const [players, setPlayers] = useState([])
+	
 	useEffect(() => {
 		const fetchLogs = async () => {
 			const data = ids
@@ -27,63 +35,107 @@ export const CombineLogs = ({ids, steam32}: props) => {
 					.then(r => r.json()),
 				)
 			
-			const logsArr = await Promise.all(data)
-			testData(logsArr, steam32)
+			const logsArr: logstf_json[] = await Promise.all(data)
+			const result = await processLogs(logsArr, steam32)
+			setPlayers(Object.values(result.DB.players))
+			
+			console.log(result)
+			return
 		}
 		fetchLogs()
 	}, [ids])
 	
+	const data = useMemo(() => players, [players])
 	
-	const data = useMemo(
-		() => [
-			{
-				col1: 'Hello',
-				col2: 'World',
-			},
-			{
-				col1: 'react-table',
-				col2: 'rocks',
-			},
-			{
-				col1: 'whatever',
-				col2: 'you want',
-			},
-		],
-		[playerLog],
-	)
+	const sumColumn = (key: string) => {
+		return {
+			Header: Abbr(key),
+			id: key,
+			accessor: player => sumNoDecimals(player[key]),
+			className: 'has-text-right',
+		}
+	}
 	
 	const columns = React.useMemo(
 		() => [
 			{
-				Header: 'Column 1',
-				accessor: 'col1', // accessor is the "key" in the data
+				Header: 'Name',
+				accessor: 'currentTeam',
+				id: 'currentName',
+				className: 'has-text-left',
+				Cell: i => i.row.original.currentName,
 			},
 			{
-				Header: 'Column 2',
-				accessor: 'col2',
+				Header: 'Classes',
+				accessor: 'mostPlayedClass', // sort key
+				id: 'class_stats',
+				className: 'has-text-left',
+				Cell: i => <ClassList player={i.row.original}/>,
 			},
+			sumColumn('kills'),
+			sumColumn('assists'),
+			sumColumn('deaths'),
+			sumColumn('dmg'),
+			sumColumn('dapm'), // dps
+			// sumColumn('dapd'), // dmg per death
+			sumColumn('kpd'), // kd
+			sumColumn('as'),
+			sumColumn('backstabs'),
+			sumColumn('headshots'), // vs headshots_hit
+			sumColumn('headshots_hit'), // vs headshots_hit
+			sumColumn('cpc'), // captures
 		],
 		[],
 	)
-	const tableInstance = useTable({columns, data})
-	
 	const {
 		getTableProps,
 		getTableBodyProps,
 		headerGroups,
 		rows,
 		prepareRow,
-	} = tableInstance
+	} = useTable({
+		columns: columns,
+		data: data,
+		disableSortRemove: true,
+	}, useSortBy)
+	
+	const getCellProps = (cell) => {
+		
+		if (['currentName'].includes(cell.column.id)) {
+			const team = cell.row.original.currentTeam
+			let className
+			
+			if (team === 'Red')
+				className = 'red'
+			if (team === 'Blue')
+				className = 'blu'
+			
+			return {
+				className: className,
+			}
+			
+		}
+		return {}
+	}
+	
+	const setBold = (i: boolean) => {
+		if(i) return ''
+		return 'noBold'
+	}
 	
 	return <>
-		<table className="table" {...getTableProps()}>
-			<thead>
+		<table className="table is-hoverable" {...getTableProps()}>
+			<thead className="thead">
 			{headerGroups.map(headerGroup => (
 				<tr {...headerGroup.getHeaderGroupProps()}>
 					{headerGroup.headers.map(column => (
 						<th
-							{...column.getHeaderProps()}
-						
+							{...column.getHeaderProps([
+								column.getSortByToggleProps(),
+								{
+									className: `th ${column.className} ${setBold(column.isSorted)}`
+								},
+							])}
 						>
 							{column.render('Header')}
 						</th>
@@ -91,15 +143,21 @@ export const CombineLogs = ({ids, steam32}: props) => {
 				</tr>
 			))}
 			</thead>
-			<tbody {...getTableBodyProps()}>
+			<tbody className="tbody" {...getTableBodyProps()}>
 			{rows.map(row => {
 				prepareRow(row)
 				return (
-					<tr {...row.getRowProps()}>
+					<tr className="tr" {...row.getRowProps()}>
 						{row.cells.map(cell => {
 							return (
 								<td
-									{...cell.getCellProps()}
+									{...cell.getCellProps([
+										{
+											className: 'td ' + cell.column.className,
+										},
+										getCellProps(cell),
+									
+									])}
 								>
 									{cell.render('Cell')}
 								</td>

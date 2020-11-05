@@ -147,6 +147,7 @@ const App = () => {
 	
 	const getSelected = () => {
 		return tableData.filter(i => i.selected)
+			.map(i => i.log.id)
 	}
 	
 	return <>
@@ -161,7 +162,7 @@ const App = () => {
 			
 		<CombineLogs
 			steam32={steam32}
-			ids={[2147695, 2147668]}/>
+			ids={[1506035,1506078,1506121,1506164]}/>
 		<div className="section container">
 			<FieldHorizontal>
 				<Label></Label>

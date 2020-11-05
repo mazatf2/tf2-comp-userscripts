@@ -8,10 +8,11 @@
   "build": "parcel build public/index.html"
  },
  "dependencies": {
-  "@bit/mazatf.components.process-log": "^1.0.3",
+  "@bit/mazatf.components.process-log": "^1.0.4",
   "fuzzysort": "^1.1.4",
   "lodash.debounce": "^4.0.8",
   "lodash.get": "^4.4.2",
+  "rc-tooltip": "^5.0.1",
   "react": "^16.13.1",
   "react-dom": "^16.13.1",
   "react-highlight-words": "^0.16.0",
