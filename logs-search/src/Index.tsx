@@ -1,21 +1,16 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import ReactDOM from 'react-dom'
-import debounce from 'lodash.debounce'
 import SteamID from 'steamid'
 import {fetchLogs} from './fetch'
-import {searchLogsApi, logList} from './logstf_api'
-import {extendComponents, LogListTable} from './components/loglisttable/LoglistTable'
-import {highlight, search} from './sort/fuzzysort'
+import {logList, searchLogsApi} from './logstf_api'
 import Fuzzysort from 'fuzzysort'
 import {searchObj} from './components/searchforms/SearchFormAdvanced'
-import {SearchSelect} from './components/SearchSelect'
-import {FilterTableSelections} from './components/FilterTableSelections'
-import {Button} from './components/searchforms/components/Button'
-import {Label} from './components/searchforms/components/Label'
-import {FieldBody} from './components/searchforms/components/FieldBody'
-import {FieldHorizontal} from './components/searchforms/components/FieldHorizontal'
-import {CombineLogs} from './components/combinelogs/CombineLogs'
-import {MainTable} from './components/loglisttable/MainTable'
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom'
+import {LandingPage} from './components/pages/LandingPage'
+import {SelectLogsPage} from './components/pages/SelectLogsPage'
+import {DevPage} from './components/pages/DevPage'
+import {LogCombinerPage} from './components/pages/LogCombinerPage'
+import {SelectLogsPageNavigation} from './components/pages/SelectLogsPageNavigation'
 
 export interface tableData {
 	steam64: string
@@ -43,6 +38,7 @@ let mainData: tableData[] = []
 const App = () => {
 	const [steam64, setSteam64] = useState<string>('76561197996199110')
 	const [tableData, setTableData] = useState<tableData[]>([])
+	const [showSelectPage, setShowSelect] = useState(false)
 	
 	const id = new SteamID(steam64)
 	const steam32 = id.getSteam3RenderedID()
@@ -75,26 +71,48 @@ const App = () => {
 			.map(i => i.log.id)
 	}
 	
-	return <>
-		{mainData.length} | {tableData.length}
-		<SearchSelect onSubmit={handleSubmit}/>
-		
-		<CombineLogs
-			steam32={steam32}
-			ids={[1506035,1506078,1506121,1506164]}/>
-		
-		<div className="section">
-			<div className="container">
-				<FilterTableSelections
-					onExtendTableChange={handleExtendTable}
-				/>
-				<LogListTable
-					tableData={tableData}
-					steam64={steam64}
-				/>
-			</div>
+	const togglePages = (page?: string) => {
+		if (page === 'select')
+			setShowSelect(true)
+		else
+			setShowSelect(false)
+	}
+	
+	const isSelectPageActive = () => {
+		if (showSelectPage)
+			return 'block'
+		return 'none'
+	}
+	
+	return <Router>
+		<Link to="/" onClick={() => togglePages('')}>Frontpage</Link>
+		<Link to="/select" onClick={() => togglePages('select')}>Select logs</Link>
+		<Link to="/dev">Debug</Link>
+		<Link to="/log-combiner">Combine logs</Link>
+		<Switch>
+			<Route path="/select">
+				test
+				<SelectLogsPageNavigation onLocationPage={togglePages}/>
+			</Route>
+			<Route path="/log-combiner">
+				<LogCombinerPage steam32={steam32} ids={[]}/>
+			</Route>
+			<Route path="/dev">
+				<DevPage/>
+			</Route>
+			<Route path="/">
+				<LandingPage/>
+			</Route>
+		</Switch>
+		<div style={{display: isSelectPageActive()}}>
+			<SelectLogsPage
+				handleSubmit={handleSubmit}
+				handleExtendTable={handleExtendTable}
+				tableData={tableData}
+				steam64={steam64}
+			/>
 		</div>
-	</>
+	</Router>
 }
 
 ReactDOM.render(<App/>, document.getElementById('root'))

@@ -19,7 +19,7 @@ const processLogs = async (logs, steam32: number) => {
 
 type props = {
 	ids: number[]
-	steam32: number
+	steam32: string
 }
 
 export const sumNoDecimals = (arr: number[]) => Number(sum(arr).toFixed(0))
