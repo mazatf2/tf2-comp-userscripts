@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
-import {SearchForm} from './searchforms/SearchForm'
-import {SearchFormAdvanced, searchObj} from './searchforms/SearchFormAdvanced'
+import {SearchLogListApiForm} from './searchforms/SearchLogListApiForm'
+import {SearchLogListApiFormAdvanced, searchObj} from './searchforms/SearchLogListApiFormAdvanced'
 import {Button} from './searchforms/components/Button'
 
-export const SearchSelect = ({onSubmit}: { onSubmit: (searchObj: searchObj) => void }) => {
+export const SearchLogListApi = ({onSubmit}: { onSubmit: (searchObj: searchObj) => void }) => {
 	const [isSimple, toggleSimple] = useState<boolean>(true)
 	
 	const toggle = () => {
@@ -28,13 +28,13 @@ export const SearchSelect = ({onSubmit}: { onSubmit: (searchObj: searchObj) => v
 	
 	return (
 		<>
-			{isSimple && <SearchForm onSubmit={onSubmit}>
+			{isSimple && <SearchLogListApiForm onSubmit={onSubmit}>
 				<Btn/>
-			</SearchForm>}
+			</SearchLogListApiForm>}
 			
-			{!isSimple && <SearchFormAdvanced onSubmit={onSubmit}>
+			{!isSimple && <SearchLogListApiFormAdvanced onSubmit={onSubmit}>
 				<Btn/>
-			</SearchFormAdvanced>}
+			</SearchLogListApiFormAdvanced>}
 		
 		</>
 	)

@@ -1,9 +1,9 @@
-import React, {forwardRef, useMemo} from 'react'
+import React, {forwardRef, useEffect, useMemo, useRef, useState} from 'react'
 import {useAsyncDebounce, useGlobalFilter, useRowSelect, useSortBy, useTable} from 'react-table'
 import {FieldHorizontal} from '../searchforms/components/FieldHorizontal'
 import {Label} from '../searchforms/components/Label'
 import {FieldBody} from '../searchforms/components/FieldBody'
-import {tableData} from '../../Index'
+import {logListTableData} from '../../Index'
 import './MainTable.css'
 
 export const IndeterminateCheckbox = forwardRef(({indeterminate, ...rest}, ref) => {
@@ -59,7 +59,7 @@ function GlobalFilter({preGlobalFilteredRows, globalFilter, setGlobalFilter}) {
 }
 
 export type MainTableProps = {
-	data: tableData[]
+	data: logListTableData[]
 	columns: []
 	steam64: string
 }

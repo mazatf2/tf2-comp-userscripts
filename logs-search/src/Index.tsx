@@ -4,7 +4,7 @@ import SteamID from 'steamid'
 import {fetchLogList} from './fetch'
 import {logListJson, searchLogListApi} from './logstf_api'
 import Fuzzysort from 'fuzzysort'
-import {searchObj} from './components/searchforms/SearchFormAdvanced'
+import {searchObj} from './components/searchforms/SearchLogListApiFormAdvanced'
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom'
 import {LandingPage} from './components/pages/LandingPage'
 import {SelectLogsPage} from './components/pages/SelectLogsPage'
@@ -12,7 +12,7 @@ import {DevPage} from './components/pages/DevPage'
 import {LogCombinerPage} from './components/pages/LogCombinerPage'
 import {SelectLogsPageNavigation} from './components/pages/SelectLogsPageNavigation'
 
-export interface tableData {
+export interface logListTableData {
 	steam64: string
 	log: logListJson
 	fuzzyResult: Fuzzysort.Result
@@ -23,7 +23,7 @@ export interface tableData {
 	selected: boolean
 }
 
-const newTableDataEntry = (i: logListJson, steam64: string): tableData => {
+const newLogListTableDataEntry = (i: logListJson, steam64: string): logListTableData => {
 	return {
 		steam64: steam64,
 		log: i,
@@ -33,11 +33,11 @@ const newTableDataEntry = (i: logListJson, steam64: string): tableData => {
 	}
 }
 
-let mainData: tableData[] = []
+let mainData: logListTableData[] = []
 
 const App = () => {
 	const [steam64, setSteam64] = useState<string>('76561197996199110')
-	const [tableData, setTableData] = useState<tableData[]>([])
+	const [logListTableData, setLogListTableData] = useState<logListTableData[]>([])
 	const [showSelectPage, setShowSelect] = useState(false)
 	
 	const id = new SteamID(steam64)
@@ -48,8 +48,8 @@ const App = () => {
 			const t = await fetchLogList({player: [steam64]})
 			const data: searchLogListApi = await t.json()
 			
-			mainData = data.logs.map(i => newTableDataEntry(i, steam64))
-			setTableData(mainData)
+			mainData = data.logs.map(i => newLogListTableDataEntry(i, steam64))
+			setLogListTableData(mainData)
 			
 			console.log(data)
 			
@@ -67,7 +67,7 @@ const App = () => {
 	}
 	
 	const getSelected = () => {
-		return tableData.filter(i => i.selected)
+		return logListTableData.filter(i => i.selected)
 			.map(i => i.log.id)
 	}
 	
@@ -108,7 +108,7 @@ const App = () => {
 			<SelectLogsPage
 				handleSubmit={handleSubmit}
 				handleExtendTable={handleExtendTable}
-				tableData={tableData}
+				tableData={logListTableData}
 				steam64={steam64}
 			/>
 		</div>

@@ -4,11 +4,11 @@ import {FieldHorizontal} from './components/FieldHorizontal'
 import {Label} from './components/Label'
 import {FieldBody} from './components/FieldBody'
 import {Button} from './components/Button'
-import {isMaybeValidSteamIdList, searchObj} from './SearchFormAdvanced'
+import {isMaybeValidSteamIdList, searchObj} from './SearchLogListApiFormAdvanced'
 import {PlayerSelect} from './rows/PlayerSelect'
 import {Form} from './components/Form'
 
-export const SearchForm = ({onSubmit, ...props}: { onSubmit: searchObj }) => {
+export const SearchLogListApiForm = ({onSubmit, ...props}: { onSubmit: searchObj }) => {
 	const {handleSubmit, register, errors} = useForm()
 	
 	return (

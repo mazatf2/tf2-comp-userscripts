@@ -1,10 +1,10 @@
-import {tableData} from '../../Index'
+import {logListTableData} from '../../Index'
 import {highlight2} from '../../sort/fuzzysort'
 import Highlighter from 'react-highlight-words'
 import React from 'react'
 
 type props = {
-	entry: tableData,
+	entry: logListTableData,
 	extend: JSX.Element | null
 	onSelect: (id: number) => void
 }

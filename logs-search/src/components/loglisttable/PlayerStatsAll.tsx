@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import {tableData} from '../../Index'
+import {logListTableData} from '../../Index'
 import {fetchLogData} from '../../fetch'
 import {logstfJson} from '../../logstf_api'
 import {labelObj} from './LoglistTable'
 
-type entry = { entry: tableData, steam32: string }
+type entry = { entry: logListTableData, steam32: string }
 
 export const playerStatsAllKeys = (steam32: string): labelObj[] => {
 	const keys = [

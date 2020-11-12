@@ -42,7 +42,7 @@ export type searchObj = {
 	title: string, map: string, uploader: string, player: string
 }
 
-export const SearchFormAdvanced = ({onSubmit, ...props}: { onSubmit: searchObj }) => {
+export const SearchLogListApiFormAdvanced = ({onSubmit, ...props}: { onSubmit: searchObj }) => {
 	const {handleSubmit, register, errors} = useForm()
 	
 	return (

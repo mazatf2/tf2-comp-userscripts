@@ -1,9 +1,9 @@
 import React, {useMemo} from 'react'
-import {tableData} from '../../Index'
+import {logListTableData} from '../../Index'
 import {IndeterminateCheckbox, MainTable} from './MainTable'
 
 export type LogListTableProps = {
-	tableData: tableData[]
+	tableData: logListTableData[]
 	steam64: string
 }
 
