@@ -6,7 +6,7 @@ import {fetchLogData} from '../../fetch'
 import {Abbr} from './Abbr'
 import './CombineLogs.css'
 import {ClassList} from './cells/ClassList'
-import {logstf_json} from '../../logstf_api'
+import {logstfJson} from '../../logstf_api'
 
 const processLogs = async (logs, steam32: number) => {
 	const handle = new ProcessLog()
@@ -35,7 +35,7 @@ export const CombineLogs = ({ids, steam32}: props) => {
 					.then(r => r.json()),
 				)
 			
-			const logsArr: logstf_json[] = await Promise.all(data)
+			const logsArr: logstfJson[] = await Promise.all(data)
 			const result = await processLogs(logsArr, steam32)
 			setPlayers(Object.values(result.DB.players))
 			

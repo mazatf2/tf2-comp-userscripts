@@ -4,7 +4,7 @@ type steam32 = string
 type unixTime = number
 type seconds = number
 
-export interface logList {
+export interface logListJson {
 	date: number
 	id: number
 	map: string
@@ -13,8 +13,8 @@ export interface logList {
 	views: number
 }
 
-export interface searchLogsApi {
-	logs: logList[]
+export interface searchLogListApi {
+	logs: logListJson[]
 	parameters: {
 		limit: number
 		map: string
@@ -28,7 +28,7 @@ export interface searchLogsApi {
 	total: number
 }
 
-export interface fetchLogsOpts {
+export interface searchLogListOpts {
 	title: string
 	map: string,
 	uploader: steam64
@@ -37,7 +37,7 @@ export interface fetchLogsOpts {
 	offset: number
 }
 
-export interface logstf_json {
+export interface logstfJson {
 	'version': number,
 	'teams': {
 		'Red': {

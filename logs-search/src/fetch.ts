@@ -1,5 +1,5 @@
 import Queue from 'smart-request-balancer'
-import {fetchLogsOpts} from './logstf_api'
+import {searchLogListOpts} from './logstf_api'
 
 const queue = new Queue({
 	rules: {
@@ -43,14 +43,14 @@ export const CacheableFetch = async (request: Request) => {
 	return result
 }
 
-export const fetchLogs = async ({
+export const fetchLogList = async ({
 									title = '',
 									map = '',
 									uploader = '',
 									player = [],
 									limit = 1000,
 									offset = 0,
-								}: Partial<fetchLogsOpts>) => {
+								}: Partial<searchLogListOpts>) => {
 	
 	// http://logs.tf/api/v1/log?title=X&uploader=Y&player=Z&limit=N&offset=N
 	const url = `https://logs.tf/api/v1/log?player=${player.join(',')}`

@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import ReactDOM from 'react-dom'
 import SteamID from 'steamid'
-import {fetchLogs} from './fetch'
-import {logList, searchLogsApi} from './logstf_api'
+import {fetchLogList} from './fetch'
+import {logListJson, searchLogListApi} from './logstf_api'
 import Fuzzysort from 'fuzzysort'
 import {searchObj} from './components/searchforms/SearchFormAdvanced'
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom'
@@ -14,16 +14,16 @@ import {SelectLogsPageNavigation} from './components/pages/SelectLogsPageNavigat
 
 export interface tableData {
 	steam64: string
-	log: logList
+	log: logListJson
 	fuzzyResult: Fuzzysort.Result
 	highlight: {
-		key: keyof logList | null,
+		key: keyof logListJson | null,
 		value: string
 	}
 	selected: boolean
 }
 
-const newTableDataEntry = (i: logList, steam64: string): tableData => {
+const newTableDataEntry = (i: logListJson, steam64: string): tableData => {
 	return {
 		steam64: steam64,
 		log: i,
@@ -45,8 +45,8 @@ const App = () => {
 	
 	useEffect(() => {
 		const testData = async () => {
-			const t = await fetchLogs({player: [steam64]})
-			const data: searchLogsApi = await t.json()
+			const t = await fetchLogList({player: [steam64]})
+			const data: searchLogListApi = await t.json()
 			
 			mainData = data.logs.map(i => newTableDataEntry(i, steam64))
 			setTableData(mainData)

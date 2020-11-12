@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {tableData} from '../../Index'
 import {fetchLogData} from '../../fetch'
-import {logstf_json} from '../../logstf_api'
+import {logstfJson} from '../../logstf_api'
 import {labelObj} from './LoglistTable'
 
 type entry = { entry: tableData, steam32: string }
@@ -114,14 +114,14 @@ export const playerStatsAllKeys = (steam32: string): labelObj[] => {
 	})
 }
 
-const tds = (logData: logstf_json, steam32: string) => {
+const tds = (logData: logstfJson, steam32: string) => {
 	return playerStatsAllKeys(steam32).map(i => <td key={i.key}>{logData.players[steam32][i.key]}</td>)
 }
 
 export const PlayerStatsAll = ({entry, steam32}: entry) => {
 	const {log} = entry
 	
-	const [logData, setLogData] = useState<logstf_json | null>(null)
+	const [logData, setLogData] = useState<logstfJson | null>(null)
 	
 	useEffect(() => {
 		fetchLogData(log.id)
