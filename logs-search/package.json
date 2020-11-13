@@ -9,6 +9,7 @@
  },
  "dependencies": {
   "@bit/mazatf.components.process-log": "^1.0.4",
+  "dayjs": "^1.9.6",
   "fuzzysort": "^1.1.4",
   "lodash.debounce": "^4.0.8",
   "lodash.get": "^4.4.2",

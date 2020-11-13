@@ -1,11 +1,12 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {getClassIcon} from '../ClassIcons'
 import ToolTip from 'rc-tooltip'
 import {sumNoDecimals} from '../CombineLogs'
-import {logstf_json_player_labels} from '../../../logstf_api'
 import 'rc-tooltip/assets/bootstrap_white.css'
+import {Abbr} from '../Abbr'
+import {getEnglishWeaponName, secondsToTimestamp} from '../../../utils'
 
-const get = (key: string) => logstf_json_player_labels[key] || ''
+const get = (key: string) => Abbr(key)
 
 export const ClassList = ({player}) => {
 	
@@ -18,9 +19,16 @@ export const ClassList = ({player}) => {
 			const assists = sumNoDecimals(i.assists)
 			const deaths = sumNoDecimals(i.deaths)
 			const dmg = sumNoDecimals(i.dmg)
-			const total_time = sumNoDecimals(i.total_time)
+			const total_time = secondsToTimestamp(sumNoDecimals(i.total_time))
 			
 			const tipID = player.steamID + i.type[0]
+			
+			const weapons = Object.values(i.weapon)
+				.map(weapon => <tr>
+					<td>{getEnglishWeaponName(weapon.name)}</td>
+					<td>{sumNoDecimals(weapon.kills)}</td>
+					<td>{sumNoDecimals(weapon.dmg)}</td>
+				</tr>)
 			
 			return <ToolTip
 				placement="top"
@@ -29,6 +37,7 @@ export const ClassList = ({player}) => {
 					<table className="table is-narrow">
 						<thead>
 						<tr>
+							<th className="th">{get('custom_playtime')}</th>
 							<th className="th">{get('kills')}</th>
 							<th className="th">{get('assists')}</th>
 							<th className="th">{get('deaths')}</th>
@@ -37,11 +46,18 @@ export const ClassList = ({player}) => {
 						</thead>
 						<tbody>
 						<tr className="tr">
+							<td>{total_time}</td>
 							<td>{kills}</td>
 							<td>{assists}</td>
 							<td>{deaths}</td>
 							<td>{dmg}</td>
 						</tr>
+						<tr>
+							<th className="th">{/* weapon.name */}</th>
+							<th className="th">{get('kills')}</th>
+							<th className="th">{get('dmg')}</th>
+						</tr>
+						{weapons}
 						</tbody>
 					</table>
 				}>

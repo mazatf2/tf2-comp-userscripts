@@ -279,6 +279,8 @@ export const logstf_json_player_labels = {
 	'heal': 'heal',
 	'cpc': 'cp captures',
 	'ic': 'intel captures',
+	
+	'custom_playtime': 'Played'
 }
 
 export const logstf_json_player_abbr = {
@@ -312,6 +314,8 @@ export const logstf_json_player_abbr = {
 	'heal': 'heal',
 	'cpc': 'CAP',
 	'ic': 'intel captures',
+	
+	'custom_playtime': 'Played'
 }
 
 export const localizedClass ={

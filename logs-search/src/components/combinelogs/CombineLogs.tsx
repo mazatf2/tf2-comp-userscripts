@@ -22,7 +22,10 @@ type props = {
 	steam32: string
 }
 
-export const sumNoDecimals = (arr: number[]) => Number(sum(arr).toFixed(0))
+export const sumNoDecimals = (arr: number[]) => {
+	if(!arr) return 0
+	return Number(sum(arr).toFixed(0))
+}
 
 export const CombineLogs = ({ids, steam32}: props) => {
 	const [logsArr, setLogsArr] = useState([])
