@@ -1,5 +1,5 @@
 import Queue from 'smart-request-balancer'
-import {searchLogListOpts} from './logstf_api'
+import {logstfJson, searchLogListOpts} from './logstf_api'
 
 const queue = new Queue({
 	rules: {
@@ -62,5 +62,6 @@ export const fetchLogList = async ({
 export const fetchLogData = async (id: number) => {
 	const url = `http://logs.tf/api/v1/log/${id}`
 	const req = new Request(url)
-	return await CacheableFetch(req)
+	const data = await CacheableFetch(req)
+	return data.json() as logstfJson
 }
