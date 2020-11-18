@@ -24,7 +24,9 @@ export const ClassList = ({player}) => {
 			const tipID = player.steamID + i.type[0]
 			
 			const weapons = Object.values(i.weapon)
-				.map(weapon => <tr>
+				.map(weapon => <tr
+					key={tipID + weapon.name}
+				>
 					<td>{getEnglishWeaponName(weapon.name)}</td>
 					<td>{sumNoDecimals(weapon.kills)}</td>
 					<td>{sumNoDecimals(weapon.dmg)}</td>
