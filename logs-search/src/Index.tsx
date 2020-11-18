@@ -72,11 +72,27 @@ const App = () => {
 	}
 	
 	const togglePages = (page?: string) => {
-		if (page === 'select')
-			setShowSelect(true)
-		else
-			setShowSelect(false)
+		console.log('togglePages')
+		
+		if (page.includes('select')){
+			if(!showSelectPage){
+				setShowSelect(true)
+				console.log('show select')
+			}
+			
+		}
+		else {
+			if(showSelectPage) {
+				setShowSelect(false)
+				console.log('hide select')
+			}
+		}
+		
 	}
+	
+	useEffect(() => {
+		togglePages(location.pathname)
+	}, [])
 	
 	const isSelectPageActive = () => {
 		if (showSelectPage)
@@ -87,8 +103,8 @@ const App = () => {
 	return <Router>
 		<Link to="/" onClick={() => togglePages('')}>Frontpage</Link>
 		<Link to="/select" onClick={() => togglePages('select')}>Select logs</Link>
-		<Link to="/dev">Debug</Link>
-		<Link to="/log-combiner">Combine logs</Link>
+		<Link to="/dev" onClick={() => togglePages('')}>Debug</Link>
+		<Link to="/log-combiner" onClick={() => togglePages('')}>Combine logs</Link>
 		<Switch>
 			<Route path="/select">
 				test
