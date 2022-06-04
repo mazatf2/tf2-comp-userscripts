@@ -10,11 +10,13 @@
 // @require      https://unpkg.com/timeago.js@4.0.2/dist/timeago.min.js
 // ==/UserScript==
 
+const Script = {allPlayers: [], isInited: false};
+
 (function () {
 	main()
-})()
+})();
 
-async function main () {
+async function main() {
 	const hookEl = document.querySelector('table.match-players')
 	const containerEl = div``
 	containerEl.id = 'userscript-etf2l-search-logs-demos'
@@ -30,27 +32,25 @@ async function main () {
 	const otherPlayers = [...document.querySelectorAll('table.match-players tr:nth-child(3) ~ tr a')].map(i => toPlayerObj(i))
 
 	const allPlayers = [...team1, ...team2, ...unrostered, ...otherPlayers]
-
-	const apiResponses = await Promise.all(allPlayers.map(i => fetchEtf2lApi(i.etf2lID)))
-		.catch(err => console.error('err', err))
+	Script.allPlayers = allPlayers
 
 	// {123: steam64, 1234: steam64, ...}
-	const index_by_etf2lId = apiResponses
+	const index_by_etf2lId = allPlayers
 		// .filter(i => i && i.player.steam.id64)
-		.map(i => {return { id64: i.player.steam.id64, id: i.player.id }})
-		.reduce((accumulator, i) => { return { ...accumulator, [i.id]: i.id64 } }, {})
+		.map(i => {
+			return {id64: 'temp', id: i.etf2lID}
+		})
+		.reduce((accumulator, i) => {
+			return {...accumulator, [i.id]: i.id64}
+		}, {})
 
 	const playerSelect = `
 	<form>
 	<br>
-	<label>Select players</label>
-	<fieldset>
-		<!-- extracted to PlayerSelectRow component. this is here for reference-->
-		${team1.map(i => `
-			<input id="${i.nick}" type="checkbox" checked data-nick="${i.nick}" data-etf2lID="${i.etf2lID}" data-id64="${index_by_etf2lId[i.etf2lID]}">
-			<label for="${i.nick}">${i.nick}</label>
-		`).join('')}
+	<fieldset style="margin: 4px; border: none">
+		<label>Userscript: Select players</label>
 	</fieldset>
+		${team1.length > 0 ? PlayerSelectRow(team1, index_by_etf2lId) : ''}
 		${team2.length > 0 ? PlayerSelectRow(team2, index_by_etf2lId) : ''}
 		${unrostered.length > 0 ? PlayerSelectRow(unrostered, index_by_etf2lId) : ''}
 		${otherPlayers.length > 0 ? PlayerSelectRow(otherPlayers, index_by_etf2lId) : ''}
@@ -82,7 +82,6 @@ async function main () {
 
 	const playerSelectEl = createEl('form', playerSelect)
 	const mapListingEl = createEl('form', mapListing)
-
 	const playersEl = [...playerSelectEl].filter(i => i.type === 'checkbox')
 
 	mapListingEl.addEventListener('click', (e) => {
@@ -94,15 +93,24 @@ async function main () {
 			if (e.target.dataset.service === 'logs.tf') {
 				button.disabled = true
 
-				const component = LogsTF(playersEl, e.target.dataset, () => {button.disabled = false})
-				document.querySelector(`ol[id="${id}"]`).append(component)
+				LogsTF(playersEl, e.target.dataset, () => {
+					button.disabled = false
+				})
+					.then((el) => {
+						document.querySelector(`ol[id="${id}"]`).append(el)
+					})
+
 			}
 
 			if (e.target.dataset.service === 'demos.tf') {
 				button.disabled = true
 
-				const component = DemosTF(playersEl, e.target.dataset, () => {button.disabled = false})
-				document.querySelector(`ol[id="${id}"]`).append(component)
+				DemosTF(playersEl, e.target.dataset, () => {
+					button.disabled = false
+				})
+					.then((el) => {
+						document.querySelector(`ol[id="${id}"]`).append(el)
+					})
 			}
 		}
 	})
@@ -117,35 +125,36 @@ async function main () {
 	containerEl.append(resetCss)
 	containerEl.append(playerSelectEl)
 	containerEl.append(mapListingEl)
+	containerEl.append(ClearCache())
 }
 
-function LogsTF (playersEl, dataset, enableButtonCb) {
-	const ids = getSteam64fromEl(playersEl)
-	const { mapname, service, css_id } = dataset
+async function LogsTF(playersEl, dataset, enableButtonCb) {
+	const ids = await getSteam64fromEl(playersEl)
+	const {mapname, service, css_id} = dataset
 	let html = li`searching...`
 
 	fetchLogsApi(ids, mapname)
 		.then(r => renderSuccess(r))
 		.catch(e => {
 			enableButtonCb()
-			console.log(e)
+			console.trace(e)
 			html.innerHTML = 'error: ' + JSON.stringify(e)
-	})
+		})
 
-	function renderSuccess (api) {
+	function renderSuccess(api) {
 		enableButtonCb()
 		html.innerHTML = `
 			<ul>
 			${api.logs.map(i => {
-				let { id, title, map, date, views, players } = i
-				const playedAgo = timeago.format(date * 1000)
-				const localeTime = new Date(date * 1000).toLocaleString()
-				const url = 'https://logs.tf/' + id
+			let {id, title, map, date, views, players} = i
+			const playedAgo = timeago.format(date * 1000)
+			const localeTime = new Date(date * 1000).toLocaleString()
+			const url = 'https://logs.tf/' + id
 
-				const txt = [title, players + ' players', playedAgo, localeTime].join(', ')
+			const txt = [title, players + ' players', playedAgo, localeTime].join(', ')
 
-				return `<li><a href="${url}">${txt}</a></li>`
-			}).join('')}
+			return `<li><a href="${url}">${txt}</a></li>`
+		}).join('')}
 			</ul>
 		`
 	}
@@ -153,36 +162,36 @@ function LogsTF (playersEl, dataset, enableButtonCb) {
 	return html
 }
 
-function DemosTF (playersEl, dataset, enableButtonCb) {
-	const ids = getSteam64fromEl(playersEl)
-	const { mapname, service, css_id } = dataset
+async function DemosTF(playersEl, dataset, enableButtonCb) {
+	const ids = await getSteam64fromEl(playersEl)
+	const {mapname, service, css_id} = dataset
 	let html = li`searching...`
 
 	fetchDemosApi(ids, mapname)
 		.then(r => renderSuccess(r))
 		.catch(e => {
 			enableButtonCb()
-			console.log(e)
+			console.trace(e)
 			html.innerHTML = 'error: ' + JSON.stringify(e)
-	})
+		})
 
-	function renderSuccess (api) {
+	function renderSuccess(api) {
 		enableButtonCb()
 		html.innerHTML = `
 			<ul>
 			${api.map(i => {
-				let { id, server, duration, map, time, red, blue, redScore, blueScore, playerCount } = i
-				const title = `${server}: ${blue} vs ${red}` // logs.tf title style
-				const playedAgo = timeago.format(time * 1000)
-				const localeTime = new Date(time * 1000).toLocaleString()
-				const url = 'https://demos.tf/' + id
+			let {id, server, duration, map, time, red, blue, redScore, blueScore, playerCount} = i
+			const title = `${server}: ${blue} vs ${red}` // logs.tf title style
+			const playedAgo = timeago.format(time * 1000)
+			const localeTime = new Date(time * 1000).toLocaleString()
+			const url = 'https://demos.tf/' + id
 
-				const txt = [
-					title, playerCount + ' players', playedAgo, localeTime , blueScore + ' - ' + redScore, Duration(duration),
-				].join(', ')
+			const txt = [
+				title, playerCount + ' players', playedAgo, localeTime, blueScore + ' - ' + redScore, Duration(duration),
+			].join(', ')
 
-				return `<li><a href="${url}">${txt}</a></li>`
-			}).join('')}
+			return `<li><a href="${url}">${txt}</a></li>`
+		}).join('')}
 			</ul>
 		`
 	}
@@ -190,7 +199,7 @@ function DemosTF (playersEl, dataset, enableButtonCb) {
 	return html
 }
 
-function PlayerSelectRow (players, index_by_etf2lId) {
+function PlayerSelectRow(players, index_by_etf2lId) {
 	const content = `
 	<fieldset>
 		${players.map(i => `
@@ -199,111 +208,141 @@ function PlayerSelectRow (players, index_by_etf2lId) {
 		`,).join('')}
 	</fieldset>
 	`
-
 	return content
 }
 
-function Duration (seconds) {
+function Duration(seconds) {
 	const m = Math.floor(seconds / 60)
 	const s = Math.floor(seconds % 60).toString().padStart(2, '0')
 	return m + ':' + s
 }
 
-function toPlayerObj (i) {
-	// https://etf2l.org/forum/user/12345
-	const playerProfileRE = /forum\/user\/(\d+)/
-
-	return { nick: i.textContent, etf2lID: playerProfileRE.exec(i.href)[1] }
+function ClearCache() {
+	//dev tools -> application -> cache -> cache storage -> userscript-etf2l-match-page
+	const fieldset = document.createElement('fieldset')
+	fieldset.style.margin = '4px'
+	fieldset.style.border = 'none'
+	const el = document.createElement('button')
+	el.textContent = 'Clear cache'
+	el.onclick = () => {
+		caches.open('userscript-etf2l-match-page')
+			.then(async (cache) => {
+				await (await cache.keys())
+					.forEach(key => cache.delete(key))
+				console.log('cache cleared')
+			})
+			.catch(console.trace)
+	}
+	fieldset.append(el)
+	return fieldset
 }
 
-function getSteam64fromEl (playersEl) {
-	const players = playersEl.filter(i => i.checked === true).map(i => i.dataset.id64)
+function toPlayerObj(i) {
+	// https://etf2l.org/forum/user/12345
+	const playerProfileRE = /forum\/user\/(\d+)/
+	return {nick: i.textContent, etf2lID: playerProfileRE.exec(i.href)[1]}
+}
 
+async function getSteam64fromEl(playersEl) {
+	if (!Script.isInited) {
+		const t = await fetchPlayers()
+		for (const apiPlayer of t) {
+			const temp = playersEl.find(i => i.dataset.nick === apiPlayer.player.name)
+			temp.dataset.id64 = apiPlayer.player.steam.id64
+		}
+		Script.isInited = true
+	}
+
+	const players = playersEl.filter(i => i.checked === true).map(i => i.dataset.id64)
 	return players
 }
 
-function style (src) {
+function style(src) {
 	const el = document.createElement('style')
 	el.innerHTML = src
 	return el
 }
 
-function li (src) {
+function li(src) {
 	const el = document.createElement('li')
 	el.innerHTML = src
 	return el
 }
 
-function div (src) {
+function div(src) {
 	const el = document.createElement('div')
 	el.innerHTML = src
 	return el
 }
 
-function createEl (tag, src) {
+function createEl(tag, src) {
 	const el = document.createElement(tag)
 	el.innerHTML = src
 	return el
 }
 
-function fetchLogsApi (idArr, mapname) {
+async function fetchLogsApi(idArr, mapname) {
 	if (!Array.isArray(idArr) && idArr.length < 2) Promise.reject('logs: player list')
 	if (typeof mapname === 'string' && mapname.length < 1) Promise.reject('logs: map name')
 
-	return new Promise((resolve, reject) => {
-		const url = `https://logs.tf/api/v1/log?player=${idArr.join(',')}&map=${mapname}`
-
-		fetch(url, { cache: 'force-cache' }).then(res => {
-			if (!res.ok) {
-				return reject(res)
-			}
-			return res.json()
-		}).then(api => {
-			if (api.success === true) {
-				return resolve(api)
-			}
-			return reject(api)
-		}).catch(err => reject(err))
-
-	})
+	const url = `https://logs.tf/api/v1/log?player=${idArr.join(',')}&map=${mapname}`
+	const res = cacheableFetch(url)
+	if (typeof res === 'object' && res.success) {
+		return res
+	} else {
+		const cache = await caches.open('userscript-etf2l-match-page')
+		await cache.delete(url)
+	}
+	return res
 }
 
-function fetchDemosApi (idArr, mapname) {
+async function fetchDemosApi(idArr, mapname) {
 	if (!Array.isArray(idArr) && idArr.length < 2) Promise.reject('demos: player list')
 	if (typeof mapname === 'string' && mapname.length < 1) Promise.reject('demos: map name')
 
-	return new Promise((resolve, reject) => {
-		const url = `https://api.demos.tf/demos/?players=${idArr.join(',')}&map=${mapname}`
-
-		fetch(url, { cache: 'force-cache' }).then(res => {
-			if (!res.ok) {
-				return reject(res)
-			}
-			return res.json()
-		}).then(api => {
-			if (api) {
-				return resolve(api)
-			}
-			return reject(api)
-		}).catch(err => reject(err))
-
-	})
+	const url = `https://api.demos.tf/demos/?players=${idArr.join(',')}&map=${mapname}`
+	const res = cacheableFetch(url)
+	if (typeof res === 'object') {
+		return res
+	} else {
+		const cache = await caches.open('userscript-etf2l-match-page')
+		await cache.delete(url)
+	}
+	return res
 }
 
-function fetchEtf2lApi (etf2lID) {
-	return new Promise((resolve, reject) => {
-		fetch('https://api.etf2l.org/player/' + etf2lID + '.json', { cache: 'force-cache' }).then(res => {
-			if (!res.ok) {
-				return reject(res)
-			}
-			return res.json()
-		}).then(api => {
-			if (api.status.code === 200) {
-				return resolve(api)
-			}
-			return reject(api)
-		}).catch(err => reject(err))
-
-	})
+async function fetchPlayers() {
+	const apiResponses = await Promise.all(Script.allPlayers.map(i => fetchEtf2lApi(i.etf2lID)))
+		.catch(err => console.error('err', err))
+	return apiResponses;
 }
 
+async function fetchEtf2lApi(etf2lID) {
+	const url = 'https://api.etf2l.org/player/' + etf2lID + '.json'
+	const res = await cacheableFetch(url)
+
+	if (res && res?.player?.steam?.id64?.length > 0) {
+		return res
+	} else {
+		const cache = await caches.open('userscript-etf2l-match-page')
+		await cache.delete(url)
+	}
+	return res
+}
+
+function cacheableFetch(url) {
+	return new Promise(async (resolve, reject) => {
+		const cache = await caches.open('userscript-etf2l-match-page')
+		const match = await cache.match(url)
+		if (match) {
+			resolve(match.clone().json())
+		}
+
+		const res = await fetch(url)
+		if (!res.ok) {
+			reject(res)
+		}
+		await cache.put(url, res.clone())
+		resolve(await res.clone().json())
+	})
+}
