@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         ETF2L match page demo and log search tool
-// @version      0.1.1
+// @version      0.1.2
 // @description  Search Logs.tf and Demos.tf for logs and demos
 // @author       https://github.com/mazatf2/
 // @match        https://etf2l.org/matches/*
