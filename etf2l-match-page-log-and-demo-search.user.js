@@ -48,7 +48,7 @@ async function main() {
 	<form>
 	<br>
 	<fieldset style="margin: 4px; border: none">
-		<label>Userscript: Select players</label>
+		<label><b>Userscript: Select players</b></label>
 	</fieldset>
 		${team1.length > 0 ? PlayerSelectRow(team1, index_by_etf2lId) : ''}
 		${team2.length > 0 ? PlayerSelectRow(team2, index_by_etf2lId) : ''}
@@ -62,7 +62,8 @@ async function main() {
 		<form>
 		${maps.map(i => `
 			<fieldset>
-				<label><b>${i}</b></label><br>
+                <label for="${i}-label"><b>Edit map version if needed:</b></label>
+                ${MapLabel(i)}
 				<div>
 					<label>logs:</label>
 					<ol id="${i}-logs.tf"></ol>
@@ -83,6 +84,13 @@ async function main() {
 	const playerSelectEl = createEl('form', playerSelect)
 	const mapListingEl = createEl('form', mapListing)
 	const playersEl = [...playerSelectEl].filter(i => i.type === 'checkbox')
+	const mapLabelEL = [...mapListingEl].filter(i => i.dataset.maplabel)
+	mapLabelEL.forEach(i => {
+		i.addEventListener('change', ev => {
+			if (ev.target.value === '')
+				ev.target.value = ev.target.dataset.maplabel
+		})
+	})
 
 	mapListingEl.addEventListener('click', (e) => {
 
@@ -95,7 +103,7 @@ async function main() {
 
 				LogsTF(playersEl, e.target.dataset, () => {
 					button.disabled = false
-				})
+				}, mapLabelEL.find(i => i.dataset.maplabel === e.target.dataset.mapname))
 					.then((el) => {
 						document.querySelector(`ol[id="${id}"]`).append(el)
 					})
@@ -107,7 +115,7 @@ async function main() {
 
 				DemosTF(playersEl, e.target.dataset, () => {
 					button.disabled = false
-				})
+				}, mapLabelEL.find(i => i.dataset.maplabel === e.target.dataset.mapname))
 					.then((el) => {
 						document.querySelector(`ol[id="${id}"]`).append(el)
 					})
@@ -128,10 +136,13 @@ async function main() {
 	containerEl.append(ClearCache())
 }
 
-async function LogsTF(playersEl, dataset, enableButtonCb) {
+async function LogsTF(playersEl, dataset, enableButtonCb, userMapNameEl) {
 	const ids = await getSteam64fromEl(playersEl)
-	const {mapname, service, css_id} = dataset
+	let {mapname, service, css_id} = dataset
 	let html = li`searching...`
+
+	if (userMapNameEl)
+		mapname = userMapNameEl.value
 
 	fetchLogsApi(ids, mapname)
 		.then(r => renderSuccess(r))
@@ -162,10 +173,13 @@ async function LogsTF(playersEl, dataset, enableButtonCb) {
 	return html
 }
 
-async function DemosTF(playersEl, dataset, enableButtonCb) {
+async function DemosTF(playersEl, dataset, enableButtonCb, userMapNameEl) {
 	const ids = await getSteam64fromEl(playersEl)
-	const {mapname, service, css_id} = dataset
+	let {mapname, service, css_id} = dataset
 	let html = li`searching...`
+
+	if (userMapNameEl)
+		mapname = userMapNameEl.value
 
 	fetchDemosApi(ids, mapname)
 		.then(r => renderSuccess(r))
@@ -235,6 +249,17 @@ function ClearCache() {
 	}
 	fieldset.append(el)
 	return fieldset
+}
+
+function MapLabel(mapName) {
+	return `
+        <input type="text"
+               value="${mapName}"
+               data-maplabel="${mapName}"
+               minlength="5"
+               required
+               id="${mapName}-label"
+        >`
 }
 
 function toPlayerObj(i) {
