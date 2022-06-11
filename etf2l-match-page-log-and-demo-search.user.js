@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         ETF2L match page demo and log search tool
-// @version      0.1
+// @version      0.1.1
 // @description  Search Logs.tf and Demos.tf for logs and demos
 // @author       https://github.com/mazatf2/
 // @match        https://etf2l.org/matches/*
@@ -344,7 +344,7 @@ async function fetchPlayers() {
 
 async function fetchEtf2lApi(etf2lID) {
 	const url = 'https://api.etf2l.org/player/' + etf2lID + '.json'
-	const res = await cacheableFetch(url)
+	const res = await cacheableFetch(url, 100)
 
 	if (res && res?.player?.steam?.id64?.length > 0) {
 		return res
@@ -355,14 +355,23 @@ async function fetchEtf2lApi(etf2lID) {
 	return res
 }
 
-function cacheableFetch(url) {
+let queueNextTry = 0
+
+function cacheableFetch(url, queueWaitMs = 0) {
 	return new Promise(async (resolve, reject) => {
+		if (queueWaitMs === 0) {
+			queueNextTry = 0
+		} else {
+			queueNextTry += queueWaitMs
+		}
+		const ourSleep = queueNextTry
 		const cache = await caches.open('userscript-etf2l-match-page')
 		const match = await cache.match(url)
 		if (match) {
 			resolve(match.clone().json())
 		}
 
+		await sleep(ourSleep)
 		const res = await fetch(url)
 		if (!res.ok) {
 			reject(res)
@@ -370,4 +379,8 @@ function cacheableFetch(url) {
 		await cache.put(url, res.clone())
 		resolve(await res.clone().json())
 	})
+}
+
+function sleep(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms))
 }
